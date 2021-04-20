@@ -16,7 +16,6 @@ namespace MyMusicApp.Datos.MyMusicModel
         public string CodCedula { get; set; }
         public string NomVendedor { get; set; }
         public string DesPuesto { get; set; }
-        public int? IdSucursal { get; set; }
         public int FkSucursal { get; set; }
 
         public virtual Sucursal FkSucursalNavigation { get; set; }

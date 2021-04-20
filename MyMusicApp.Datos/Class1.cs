@@ -2,6 +2,7 @@
 using MyMusicApp.Datos.MyMusicModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace MyMusicApp.Datos
 {
@@ -24,25 +25,40 @@ namespace MyMusicApp.Datos
         #endregion
 
         #region Metodos
-        public void ListarProductos ()
+        public object ListarProductos ()
         {
             try
             {
                 //                 1       2         3
                 var productos = contexto.Productos.ToList();
+                if (productos.Count> 0)
+                {
+                    return productos;
+                }
+                else 
+                {
+                    throw new Exception("No se encontraron productos en la base de datos");
+                }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-
-                throw;
+                return error.Message;
             }
         }
 
-        public void ListarProductosPorTipo(int tipo)
+        public object ListarProductosPorTipo(int tipo)
         {
             try
             {
                 var productosPorTipo = contexto.Productos.Where(P => P.TipProducto == tipo).ToList();
+                if (productosPorTipo.Count >0)
+                {
+                    return productosPorTipo;
+                }
+                else
+                {
+                    throw new Exception("No se encontraron productos para el tipo indicado en la base de datos");
+                }
             }
             catch (Exception)
             {
@@ -50,7 +66,7 @@ namespace MyMusicApp.Datos
             }
         }
 
-        public void ObtenerProductoPorCodigo(int codigo)
+        public object ObtenerProductoPorCodigo(int codigo)
         {
             try
             {
@@ -59,10 +75,19 @@ namespace MyMusicApp.Datos
                 
                 //                      1      2        3               4                    3*       
                 var producto = contexto.Productos.FirstOrDefault(P => P.PkProducto == codigo);
+                if (producto != null)
+                {
+                    return producto;
+                }
+                else 
+                {
+                    throw  new Exception("No se encontraron productos con el código suministrato");
+                }
+
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                throw;
+                return error.Message;
             }
         }
 
@@ -132,6 +157,134 @@ namespace MyMusicApp.Datos
             {
 
                 throw;
+            }
+        }
+
+        // Método con parametros anónimos
+        public object FiltrarProductosPorParametros (string nombreParametro, object datoParemtro, List<Producto> datosPrevios)
+        {
+            try
+            {
+                List<Producto> respuesta = new List<Producto>();
+                int valorInt = 0;
+                string valorString = string.Empty;
+                List<decimal> valoresDecimal = new List<decimal>();
+
+                if (datosPrevios.Count > 0)
+                {
+                    switch (nombreParametro)
+                    {
+                        case "Nombre":
+                            datosPrevios = datosPrevios.Where(P => P.NomProducto.Contains(datoParemtro.ToString())).ToList();
+                            break;
+                        case "Tipo":
+                            valorInt = Convert.ToInt32(datoParemtro);
+                            datosPrevios = datosPrevios.Where(P => (P.TipProducto == valorInt)).ToList();
+                            break;
+                        case "Sucursal":
+                            valorInt = Convert.ToInt32(datoParemtro);
+                            datosPrevios = datosPrevios.Where(P => (P.FkSucursal == valorInt)).ToList();
+                            break;
+                        case "Rango":
+                            
+                            valoresDecimal = (List<decimal>)datoParemtro;
+                            /*datosPrevios = datosPrevios.Where(P => P.MtoPrecioUnitario >= valoresDouble.ElementAt(0)
+                                                                      && P.MtoPrecioUnitario <= valoresDouble.ElementAt(1)).ToList(); */
+                            break;
+                        default:
+                            break;
+                    }
+                    return datosPrevios;
+                }
+                else
+                {
+                    switch (nombreParametro)
+                    {
+                        case "Nombre":
+                            respuesta = contexto.Productos.Where(P => P.NomProducto.Contains(datoParemtro.ToString())).ToList();
+                            break;
+                        case "Tipo":
+                            valorInt = Convert.ToInt32(datoParemtro);
+                            respuesta = contexto.Productos.Where(P => (P.TipProducto == valorInt)).ToList();
+                            break;
+                        case "Sucursal":
+                            valorInt = Convert.ToInt32(datoParemtro);
+                            respuesta = contexto.Productos.Where(P => (P.FkSucursal == valorInt)).ToList();
+                            break;
+                        case "Rango":
+                            valoresDecimal = (List<decimal>)datoParemtro;
+                            respuesta = contexto.Productos.Where(P => P.MtoPrecioUnitario >= valoresDecimal.ElementAt(0)
+                                                                      && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList(); 
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return respuesta;
+            }
+            catch (Exception error)
+            {
+                return  error.Message;
+                throw;
+            }
+        }
+        
+
+        // Metodo con parametros opcionales
+        public object FiltrarProductosPorParametros(string nombre = null, int tipo = 0, int sucursal = 0, 
+                                                      List<decimal> rangos = null)
+        {
+            try
+            {
+                List<Producto> respuesta = new List<Producto>();
+
+                if (nombre != null)
+                {
+                    respuesta = contexto.Productos.Where(P => P.NomProducto.Contains(nombre)).ToList();
+                }
+
+                if (tipo != 0)
+                {
+                    if (respuesta.Count > 0)
+                    {
+                        respuesta = respuesta.Where(P => P.TipProducto == tipo).ToList();
+                    }
+                    else
+                    {
+                        respuesta = contexto.Productos.Where(P => P.TipProducto == tipo).ToList();
+                    }
+                }
+
+                if (sucursal != 0)
+                {
+                    if (respuesta.Count > 0)
+                    {
+                        respuesta = respuesta.Where(P => P.FkSucursal == sucursal).ToList();
+                    }
+                    else
+                    {
+                        respuesta = contexto.Productos.Where(P => P.FkSucursal == sucursal).ToList();
+                    }
+                }
+
+                if (rangos != null)
+                {
+                    if (respuesta.Count > 0)
+                    {
+                        respuesta = respuesta.Where(P => P.MtoPrecioUnitario >= rangos.ElementAt(0) &&
+                                                         P.MtoPrecioUnitario <= rangos.ElementAt(1)).ToList();
+                    }
+                    else
+                    {
+                        respuesta = contexto.Productos.Where(P => P.MtoPrecioUnitario >= rangos.ElementAt(0) &&
+                                                             P.MtoPrecioUnitario <= rangos.ElementAt(1)).ToList();
+                    }
+                }
+                return respuesta;
+            }
+            catch (Exception error)
+            {
+                return error.Message;
             }
         }
         #endregion

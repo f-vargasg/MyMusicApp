@@ -17,6 +17,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public int? TipProducto { get; set; }
         public int? CntProducto { get; set; }
         public int FkSucursal { get; set; }
+        public decimal? MtoPrecioUnitario { get; set; }
 
         public virtual Sucursal FkSucursalNavigation { get; set; }
         public virtual ICollection<DetalleCompra> DetalleCompras { get; set; }

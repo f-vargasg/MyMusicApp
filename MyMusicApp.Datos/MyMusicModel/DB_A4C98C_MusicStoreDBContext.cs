@@ -115,6 +115,8 @@ namespace MyMusicApp.Datos.MyMusicModel
 
                 entity.ToTable("Producto");
 
+                entity.Property(e => e.MtoPrecioUnitario).HasColumnType("decimal(18, 2)");
+
                 entity.Property(e => e.NomProducto).HasMaxLength(100);
 
                 entity.HasOne(d => d.FkSucursalNavigation)
