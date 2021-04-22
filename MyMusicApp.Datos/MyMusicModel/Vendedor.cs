@@ -17,6 +17,8 @@ namespace MyMusicApp.Datos.MyMusicModel
         public string NomVendedor { get; set; }
         public string DesPuesto { get; set; }
         public int FkSucursal { get; set; }
+        public string UsrVendedor { get; set; }
+        public string UsrPassword { get; set; }
 
         public virtual Sucursal FkSucursalNavigation { get; set; }
         public virtual ICollection<OrdenCompra> OrdenCompras { get; set; }

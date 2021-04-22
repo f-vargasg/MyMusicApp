@@ -25,17 +25,17 @@ namespace MyMusicApp.Datos
         #endregion
 
         #region Metodos
-        public object ListarProductos ()
+        public object ListarProductos()
         {
             try
             {
                 //                 1       2         3
                 var productos = contexto.Productos.ToList();
-                if (productos.Count> 0)
+                if (productos.Count > 0)
                 {
                     return productos;
                 }
-                else 
+                else
                 {
                     throw new Exception("No se encontraron productos en la base de datos");
                 }
@@ -51,7 +51,7 @@ namespace MyMusicApp.Datos
             try
             {
                 var productosPorTipo = contexto.Productos.Where(P => P.TipProducto == tipo).ToList();
-                if (productosPorTipo.Count >0)
+                if (productosPorTipo.Count > 0)
                 {
                     return productosPorTipo;
                 }
@@ -72,16 +72,16 @@ namespace MyMusicApp.Datos
             {
                 //                      1      2        3               4                    3*       
                 // var producto = contexto.Productos.Where(P => P.PkProducto == codigo).FirstOrDefault();
-                
+
                 //                      1      2        3               4                    3*       
                 var producto = contexto.Productos.FirstOrDefault(P => P.PkProducto == codigo);
                 if (producto != null)
                 {
                     return producto;
                 }
-                else 
+                else
                 {
-                    throw  new Exception("No se encontraron productos con el código suministrato");
+                    throw new Exception("No se encontraron productos con el código suministrato");
                 }
 
             }
@@ -104,7 +104,7 @@ namespace MyMusicApp.Datos
             }
         }
 
-        public void ListarTipoProductoPorSucursal (int tipo, int codigoSucursal)
+        public void ListarTipoProductoPorSucursal(int tipo, int codigoSucursal)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace MyMusicApp.Datos
         }
 
         // Método con parametros anónimos
-        public object FiltrarProductosPorParametros (string nombreParametro, object datoParemtro, List<Producto> datosPrevios)
+        public object FiltrarProductosPorParametros(string nombreParametro, object datoParametro, List<Producto> datosPrevios)
         {
             try
             {
@@ -175,21 +175,22 @@ namespace MyMusicApp.Datos
                     switch (nombreParametro)
                     {
                         case "Nombre":
-                            datosPrevios = datosPrevios.Where(P => P.NomProducto.Contains(datoParemtro.ToString())).ToList();
+                            datosPrevios = datosPrevios.Where(P => P.NomProducto.Contains(datoParametro.ToString())).ToList();
                             break;
                         case "Tipo":
-                            valorInt = Convert.ToInt32(datoParemtro);
+                            valorInt = Convert.ToInt32(datoParametro);
                             datosPrevios = datosPrevios.Where(P => (P.TipProducto == valorInt)).ToList();
                             break;
                         case "Sucursal":
-                            valorInt = Convert.ToInt32(datoParemtro);
+                            valorInt = Convert.ToInt32(datoParametro);
                             datosPrevios = datosPrevios.Where(P => (P.FkSucursal == valorInt)).ToList();
                             break;
                         case "Rango":
-                            
-                            valoresDecimal = (List<decimal>)datoParemtro;
+                            valoresDecimal = (List<decimal>)datoParametro;
                             /*datosPrevios = datosPrevios.Where(P => P.MtoPrecioUnitario >= valoresDouble.ElementAt(0)
                                                                       && P.MtoPrecioUnitario <= valoresDouble.ElementAt(1)).ToList(); */
+                            datosPrevios = datosPrevios.Where(P => P.MtoPrecioUnitario >= valoresDecimal.ElementAt(0)
+                                          && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList(); 
                             break;
                         default:
                             break;
@@ -201,20 +202,20 @@ namespace MyMusicApp.Datos
                     switch (nombreParametro)
                     {
                         case "Nombre":
-                            respuesta = contexto.Productos.Where(P => P.NomProducto.Contains(datoParemtro.ToString())).ToList();
+                            respuesta = contexto.Productos.Where(P => P.NomProducto.Contains(datoParametro.ToString())).ToList();
                             break;
                         case "Tipo":
-                            valorInt = Convert.ToInt32(datoParemtro);
+                            valorInt = Convert.ToInt32(datoParametro);
                             respuesta = contexto.Productos.Where(P => (P.TipProducto == valorInt)).ToList();
                             break;
                         case "Sucursal":
-                            valorInt = Convert.ToInt32(datoParemtro);
+                            valorInt = Convert.ToInt32(datoParametro);
                             respuesta = contexto.Productos.Where(P => (P.FkSucursal == valorInt)).ToList();
                             break;
                         case "Rango":
-                            valoresDecimal = (List<decimal>)datoParemtro;
+                            valoresDecimal = (List<decimal>)datoParametro;
                             respuesta = contexto.Productos.Where(P => P.MtoPrecioUnitario >= valoresDecimal.ElementAt(0)
-                                                                      && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList(); 
+                                                                      && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList();
                             break;
                         default:
                             break;
@@ -224,14 +225,14 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return  error.Message;
+                return error.Message;
                 throw;
             }
         }
-        
+
 
         // Metodo con parametros opcionales
-        public object FiltrarProductosPorParametros(string nombre = null, int tipo = 0, int sucursal = 0, 
+        public object FiltrarProductosPorParametros(string nombre = null, int tipo = 0, int sucursal = 0,
                                                       List<decimal> rangos = null)
         {
             try
@@ -287,7 +288,132 @@ namespace MyMusicApp.Datos
                 return error.Message;
             }
         }
+
+
+        public object AgregarSucursal(string ubicacion, string horario, string telefono, string correo)
+        {
+            try
+            {
+                var sucursal = new Sucursal
+                {
+                    DirUbicacion = ubicacion,
+                    DesHorario = horario,
+                    TelSucursal = telefono,
+                    EmlSucursal = correo,
+                };
+                contexto.Sucursals.Add(sucursal);
+
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("No se pudo guardar la sucursal, por favor revisar los datos suministrados");
+                }
+    
+                return true;
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+
+        public object ActualizarDatosSucursal(int codigo, string ubicacion, string telefono, string correo,
+                                              string horario)
+        {
+            try
+            {
+                var sucursal = contexto.Sucursals.FirstOrDefault(S => S.PkSucursal == codigo);
+                if (sucursal != null)
+                {
+                    // Hacemos la actualizacion
+                    sucursal.DirUbicacion = ubicacion;
+                    sucursal.TelSucursal = telefono;
+                    sucursal.EmlSucursal = correo;
+                    sucursal.DesHorario = horario;
+
+                    
+                    if (contexto.SaveChanges() >0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar la sucursal, por favor revise los datos suministrados");
+                    } 
+
+                }
+                else
+                {
+                    throw new Exception("No se encontró la sucursal con el código suministrado");
+                }
+                return true;
+            }
+            catch (Exception error)
+            {
+               return  error.Message;
+            }
+        }
+
+        public object RegistrarSucursalConVendedorEncargado (string telefonoSucursal, string ubicacionSucursal,
+                                                           string correoSucursal, string horarioSucursal,
+                                                           string nombreVendedor, string ptoVendedor,
+                                                           string userVendedor, string passVendedor)
+        {
+            try
+            {
+                var sucursal = new Sucursal
+                {
+                    DirUbicacion = ubicacionSucursal,
+                    DesHorario = horarioSucursal,
+                    TelSucursal = telefonoSucursal,
+                    EmlSucursal = correoSucursal
+                };
+
+                contexto.Add(sucursal);
+                sucursal.Vendedors.Add(
+                    new Vendedor
+                    {
+                        NomVendedor = nombreVendedor,
+                        DesPuesto = ptoVendedor,
+                        UsrVendedor = userVendedor,
+                        UsrPassword = userVendedor
+                    });
+                ;
+                var guardado  = contexto.SaveChanges();
+                if (guardado > 0 )
+                {
+                    if (guardado == 1)
+                    {
+                        throw new Exception("Se guardó la información de la sucursal, pero ocurrió un error guardando el vendedor");
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se puedo guardar la información suministrada");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         #endregion
 
     }
+
 }
+
+
+

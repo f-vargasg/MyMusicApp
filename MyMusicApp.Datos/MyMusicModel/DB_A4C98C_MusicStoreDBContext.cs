@@ -159,7 +159,7 @@ namespace MyMusicApp.Datos.MyMusicModel
 
                 entity.Property(e => e.DirUbicacion).HasMaxLength(300);
 
-                entity.Property(e => e.EmSucursal).HasMaxLength(300);
+                entity.Property(e => e.EmlSucursal).HasMaxLength(300);
 
                 entity.Property(e => e.TelSucursal).HasMaxLength(50);
             });
@@ -176,6 +176,10 @@ namespace MyMusicApp.Datos.MyMusicModel
                 entity.Property(e => e.DesPuesto).HasMaxLength(100);
 
                 entity.Property(e => e.NomVendedor).HasMaxLength(80);
+
+                entity.Property(e => e.UsrPassword).HasMaxLength(50);
+
+                entity.Property(e => e.UsrVendedor).HasMaxLength(50);
 
                 entity.HasOne(d => d.FkSucursalNavigation)
                     .WithMany(p => p.Vendedors)

@@ -18,36 +18,37 @@ namespace MyMusicApp.Datos
         DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
         #endregion
 
-        #region Constructores
+        #region Constructor
         public VendedorDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }
+
         public VendedorDatos()
         {
 
         }
         #endregion
 
-        #region Metodos
-        public object ObtenerVendedorePorCodigo(int codigo)
+        #region Método
+
+        /// <summary>
+        /// 4.a Listado total de vendedores
+        /// </summary>
+        public object ListarTotalVendedores()
         {
             try
             {
-                //                      1      2        3               4                    3*       
-                // var producto = contexto.Productos.Where(P => P.PkProducto == codigo).FirstOrDefault();
+                var vendedores = contexto.Vendedors.ToList();
 
-                //                      1      2        3               4                    3*       
-                var vendedor = contexto.Vendedors.FirstOrDefault(P => P.PkVendedor == codigo);
-                if (vendedor != null)
+                if (vendedores.Count > 0)
                 {
-                    return vendedor;
+                    return vendedores;
                 }
                 else
                 {
-                    throw new Exception("No se encontraron vendedores con el código suministrato");
+                    throw new Exception("No se encontraron los vendedores [ListarTotalVendedores]");
                 }
-
             }
             catch (Exception error)
             {
@@ -55,73 +56,140 @@ namespace MyMusicApp.Datos
             }
         }
 
-        public  object ListarVendedorPorSucursal(int codigoSucursal)
+        /// <summary>
+        /// 4.b. Búsqueda de vendedor por Primary Key
+        /// </summary>
+        /// <param name="codigo"></param>
+        public object ObtenerVendedorPorCodigo(int codigo)
         {
             try
             {
-                var vendedores = contexto.Vendedors.Where(P => P.FkSucursal == codigoSucursal).ToList();
+                var vendedor = contexto.Vendedors.FirstOrDefault(V => V.PkVendedor == codigo);
+
+                if (vendedor != null)
+                {
+                    return vendedor;
+                }
+                else
+                {
+                    throw new Exception("No se encontraron vendedores por código en la base de datos [ObtenerVendedorPorCodigo]");
+                }
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+        /// <summary>
+        /// 4.c. Búsqueda de vendedor según su puesto
+        /// </summary>
+        /// <param name="puesto"></param>
+        /// <returns></returns>
+        public object ListarVendedoresPorPuesto(string puesto)
+        {
+            try
+            {
+                var vendedores = contexto.Vendedors.Where(V => V.DesPuesto.Contains(puesto)).ToList();
+
                 if (vendedores.Count > 0)
                 {
                     return vendedores;
                 }
                 else
                 {
-                    return new Exception("No existe Vendedor por sucursal");
+                    throw new Exception("No se encontraron vendedores por puesto [ListarVendedoresPorPuesto]");
                 }
-
-
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                return ex.Message;
+                return error.Message;
             }
         }
 
-        public object ListarVendedorPorSucursalPorPuesto(int codigoSucursal, string desPuesto)
+        /// <summary>
+        /// 4.d Búsqueda de vendedor según la sucursal a la que pertenecen
+        /// </summary>
+        /// <param name="codigoSucursal"></param>
+        public object ListarVendedorPorSucursal(int codigoSucursal)
         {
             try
             {
-                // var productos = contexto.Productos.Where(P => P.TipProducto == tipo &&P.FkSucursal == codigoSucursal).Include(S => ).ToList();
-                var vendedores = contexto.Vendedors.Where(S => S.FkSucursal == codigoSucursal &&
-                                                               S.DesPuesto == desPuesto).ToList();
+                var vendedores = contexto.Vendedors.Where(V => V.FkSucursal == codigoSucursal).ToList();
+
                 if (vendedores.Count > 0)
                 {
                     return vendedores;
                 }
                 else
                 {
-                    return new Exception("No existen Vendedores por codigo sucursal y puesto");
+                    throw new Exception("No se encontraron vendedores por sucursal [ListarVendedorPorSucursal]");
                 }
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                return ex.Message;
+                return error.Message;
             }
         }
 
-        public object ListarVendedoresPorNombreSucursalPuesto(string nombreParametro, object datoParemtro, List<Vendedor> datosPrevios)
+        /// <summary>
+        /// HECHOS ANTERIORMENTE
+        /// obtener los vendedores de una sucursal determinada segun su puesto
+        /// </summary>
+        /// <param name="puesto"></param>
+        /// <param name="codigoSucursal"></param>
+        /// <returns></returns>
+        public object ListarVendedoresSucursalPuesto(string puesto, int codigoSucursal)
+        {
+            try
+            {
+                var vendedores = contexto.Vendedors.Where(V => V.FkSucursal == codigoSucursal && V.DesPuesto.Contains(puesto)).ToList();
+
+                if (vendedores.Count > 0)
+                {
+                    return vendedores;
+                }
+                else
+                {
+                    throw new Exception("No se encontraron venderores por sucursal y puesto [ListarVendedoresSucursalPuesto]");
+                }
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+
+        /// <summary>
+        /// HECHOS ANTERIORMENTE
+        /// //#4 filtrar los vendedores ya sea por el nombre, la sucursal, el puesto
+        /// </summary>
+        /// <param name="nombreParametro"></param>
+        /// <param name="datoParametro"></param>
+        /// <param name="datosPrevios"></param>
+        /// <returns></returns>
+        public object FiltrarVendedoresPorParametros(string nombreParametro, object datoParametro, List<Vendedor> datosPrevios)
         {
             try
             {
                 List<Vendedor> respuesta = new List<Vendedor>();
+
                 int valorInt = 0;
-                string valorString = string.Empty;
-                List<decimal> valoresDecimal = new List<decimal>();
 
                 if (datosPrevios.Count > 0)
                 {
                     switch (nombreParametro)
                     {
                         case "Nombre":
-                            datosPrevios = datosPrevios.Where(P => P.NomVendedor.Contains(datoParemtro.ToString())).ToList();
+                            datosPrevios = datosPrevios.Where(V => V.NomVendedor.Contains(datoParametro.ToString())).ToList();
                             break;
                         case "Sucursal":
-                            valorInt = Convert.ToInt32(datoParemtro);
-                            datosPrevios = datosPrevios.Where(P => (P.FkSucursal == valorInt)).ToList();
+                            valorInt = Convert.ToInt32(datoParametro);
+                            datosPrevios = datosPrevios.Where(V => V.FkSucursal == valorInt).ToList();
                             break;
                         case "Puesto":
-                            valorString = Convert.ToString(datoParemtro);
-                            datosPrevios = datosPrevios.Where(P => P.DesPuesto ==valorString).ToList();
+                            datosPrevios = datosPrevios.Where(V => V.DesPuesto.Contains(datoParametro.ToString())).ToList();
                             break;
                         default:
                             break;
@@ -133,29 +201,27 @@ namespace MyMusicApp.Datos
                     switch (nombreParametro)
                     {
                         case "Nombre":
-                            respuesta = contexto.Vendedors.Where(P => P.NomVendedor.Contains(datoParemtro.ToString())).ToList();
+                            respuesta = contexto.Vendedors.Where(V => V.NomVendedor.Contains(datoParametro.ToString())).ToList();
                             break;
                         case "Sucursal":
-                            valorInt = Convert.ToInt32(datoParemtro);
-                            respuesta = contexto.Vendedors.Where(P => (P.FkSucursal == valorInt)).ToList();
+                            valorInt = Convert.ToInt32(datoParametro);
+                            respuesta = contexto.Vendedors.Where(V => V.FkSucursal == valorInt).ToList();
                             break;
                         case "Puesto":
-                            valorString = Convert.ToString(datoParemtro);
-                            respuesta = contexto.Vendedors.Where(P => P.DesPuesto == valorString).ToList();
+                            respuesta = contexto.Vendedors.Where(V => V.DesPuesto.Contains(datoParametro.ToString())).ToList();
                             break;
                         default:
                             break;
-
                     }
+                    return respuesta;
                 }
-                return respuesta;
             }
-            catch (Exception error)
+            catch (Exception er)
             {
-                return error.Message;
-                throw;
+                return er.Message;
             }
         }
+
         #endregion
     }
 }

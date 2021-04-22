@@ -17,7 +17,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public string DirUbicacion { get; set; }
         public string DesHorario { get; set; }
         public string TelSucursal { get; set; }
-        public string EmSucursal { get; set; }
+        public string EmlSucursal { get; set; }
 
         public virtual ICollection<Producto> Productos { get; set; }
         public virtual ICollection<Vendedor> Vendedors { get; set; }
