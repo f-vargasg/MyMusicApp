@@ -7,40 +7,42 @@ using System.Threading.Tasks;
 
 namespace MyMusicApp.Datos
 {
-    public class SolicitudEnvioDomicDatos
+    public class SolicitudEnvioDatos
     {
         #region Variables
         DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
         #endregion
 
         #region Constructores
-        public SolicitudEnvioDomicDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public SolicitudEnvioDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }
-        public SolicitudEnvioDomicDatos()
+        public SolicitudEnvioDatos()
         {
 
         }
         #endregion
 
         #region Metodos
-        public object ObtenerSolicitudEnvioPorPk(int idSolEnvio)
+
+        /// <summary>
+        /// 5.a. Búsqueda de la solicitud de envío por Primary Key
+        /// </summary>
+        /// <param name="codigo"></param>
+        /// <returns></returns>
+        public object ObtenerSolicitudEnvioPorCodigo(int codigo)
         {
             try
             {
-                //                      1      2        3               4                    3*       
-                // var producto = contexto.Productos.Where(P => P.PkProducto == codigo).FirstOrDefault();
-
-                //                      1      2        3               4                    3*       
-                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(P => P.PkSolicitudEnvio == idSolEnvio);
+                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(P => P.PkSolicitudEnvio == codigo);
                 if (solicitudEnvio != null)
                 {
                     return solicitudEnvio;
                 }
                 else
                 {
-                    throw new Exception("No se encontró Solicitud de Envio  con la id Solicitud suministrado");
+                    throw new Exception("No se encontró Solicitud de Envio con el codigo suministrado");
                 }
             }
             catch (Exception error)
@@ -49,11 +51,17 @@ namespace MyMusicApp.Datos
             }
         }
 
-        public object ListarSolicitudesPorEstado(int indEstado)
+        /// <summary>
+        /// 5.b. Listado de las solicitudes de envío según su Estado
+        /// </summary>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        public object ListarSolicitudesEnvioPorEstado(int indEstado)
         {
             try
             {
                 var solicitudesEnvio = contexto.SolicitudEnvioDomics.Where(S => S.IndEstado == indEstado).ToList();
+
                 if (solicitudesEnvio.Count > 0)
                 {
                     return solicitudesEnvio;
@@ -62,8 +70,6 @@ namespace MyMusicApp.Datos
                 {
                     return new Exception("No existe solicitudes de envio por el estado indicado");
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -71,15 +77,16 @@ namespace MyMusicApp.Datos
             }
         }
 
-        public object ListadoTotalSolicitudesEnvio()
+        /// <summary>
+        /// 5.c. Listado total de solicitudes de envío.
+        /// </summary>
+        /// <returns></returns>
+        public object ListarTotalSolicitudesEnvio()
         {
             try
             {
-                //                      1      2        3               4                    3*       
-                // var producto = contexto.Productos.Where(P => P.PkProducto == codigo).FirstOrDefault();
-
-                //                      1      2        3               4                    3*       
                 var solicitudesEnvio = contexto.SolicitudEnvioDomics.ToList();
+
                 if (solicitudesEnvio.Count > 0)
                 {
                     return solicitudesEnvio;
@@ -95,15 +102,19 @@ namespace MyMusicApp.Datos
             }
         }
 
-
-        public object ListarSolicitudesEnvioPorEstadoRngFecEnvioRngFecRecibo (string nombreParametro, object datoParemtro, 
-                                                                                List<SolicitudEnvioDomic> datosPrevios)
+        /// <summary>
+        /// 5.d. Listado de solicitudes de envío filtradas por alguno o todos los siguientes parámetros: Estado, un rango de fechas (inicio y final) asociadas a la fecha de envío y un rango de fechas (inicio y final) asociadas a la fecha de recibido.
+        /// </summary>
+        /// <param name="nombreParametro"></param>
+        /// <param name="datoParametro"></param>
+        /// <param name="datosPrevios"></param>
+        /// <returns></returns>
+        public object FiltrarSolicitudesEnvioPorParametros(string nombreParametro, object datoParametro, List<SolicitudEnvioDomic> datosPrevios)
         {
             try
             {
                 List<SolicitudEnvioDomic> respuesta = new List<SolicitudEnvioDomic>();
                 int valorInt = 0;
-                // string valorString = string.Empty;
                 List<DateTime> valoresFecha = new List<DateTime>();
 
                 if (datosPrevios.Count > 0)
@@ -111,16 +122,16 @@ namespace MyMusicApp.Datos
                     switch (nombreParametro)
                     {
                         case "Estado":
-                            valorInt = Convert.ToInt32(datoParemtro);
+                            valorInt = Convert.ToInt32(datoParametro);
                             datosPrevios = datosPrevios.Where(S => S.IndEstado == valorInt).ToList();
                             break;
                         case "RangoFecEnvio":
-                            valoresFecha = (List<DateTime>)datoParemtro;
+                            valoresFecha = (List<DateTime>)datoParametro;
                             datosPrevios = datosPrevios.Where(P => P.FecEnvio >= valoresFecha.ElementAt(0)
-                                                                      && P.FecEnvio <= valoresFecha.ElementAt(1)).ToList(); 
+                                                                      && P.FecEnvio <= valoresFecha.ElementAt(1)).ToList();
                             break;
                         case "RangoFecRecibo":
-                            valoresFecha = (List<DateTime>)datoParemtro;
+                            valoresFecha = (List<DateTime>)datoParametro;
                             datosPrevios = datosPrevios.Where(P => P.FecRecibo >= valoresFecha.ElementAt(0)
                                                                       && P.FecRecibo <= valoresFecha.ElementAt(1)).ToList();
                             break;
@@ -137,12 +148,12 @@ namespace MyMusicApp.Datos
                             respuesta = contexto.SolicitudEnvioDomics.Where(S => S.IndEstado == valorInt).ToList();
                             break;
                         case "RangoFecEnvio":
-                            valoresFecha = (List<DateTime>)datoParemtro;
+                            valoresFecha = (List<DateTime>)datoParametro;
                             respuesta = contexto.SolicitudEnvioDomics.Where(S => S.FecEnvio >= valoresFecha.ElementAt(0)
                                                                       && S.FecEnvio <= valoresFecha.ElementAt(1)).ToList();
                             break;
                         case "RangoFecRecibo":
-                            valoresFecha = (List<DateTime>)datoParemtro;
+                            valoresFecha = (List<DateTime>)datoParametro;
                             respuesta = contexto.SolicitudEnvioDomics.Where(S => S.FecRecibo >= valoresFecha.ElementAt(0)
                                                                       && S.FecRecibo <= valoresFecha.ElementAt(1)).ToList();
                             break;
@@ -158,6 +169,7 @@ namespace MyMusicApp.Datos
                 throw;
             }
         }
+
         #endregion
     }
 }
