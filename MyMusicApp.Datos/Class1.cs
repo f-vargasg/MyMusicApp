@@ -375,7 +375,7 @@ namespace MyMusicApp.Datos
                     EmlSucursal = correoSucursal
                 };
 
-                contexto.Add(sucursal);
+                contexto.Sucursals.Add(sucursal);
                 sucursal.Vendedors.Add(
                     new Vendedor
                     {
@@ -409,7 +409,165 @@ namespace MyMusicApp.Datos
             }
         }
 
+       
+        public object AgregarCliente(Cliente cliente)
+        {
+            try
+            {
+                contexto.Clientes.Add(cliente);
+                if (contexto.SaveChanges() >0)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("No se pudo insertar cliente");
+                }
+            }
+            catch (Exception error)
+            {
+
+                return error.Message;
+            }
+        }
+
+        // forma "compleja"
+        // En este método vamos a insertar la sucursal y el producto como uno solo,
+        // sino se inserta el producto no se inserta el producto
+        public object AgregarSucursalConProductos(string telefonoSucursal, string ubicacionSucursal,
+                                                  string correoSucursal, string horarioSucursal,
+                                                  string nombreProducto, int tipoProducto, int cantidadProducto,
+                                                  decimal montoProducto)
+        {
+            try
+            {
+                List<Producto> productosInsertar = new List<Producto>
+                {
+                    new Producto
+                    {
+                        CntProducto = cantidadProducto,
+                        TipProducto = tipoProducto,
+                        MtoPrecioUnitario = montoProducto,
+                        NomProducto = nombreProducto
+
+                    }
+                };
+
+                var sucursal = new Sucursal
+                {
+                    DirUbicacion = ubicacionSucursal,
+                    EmlSucursal = correoSucursal,
+                    DesHorario = horarioSucursal,
+                    TelSucursal = telefonoSucursal,
+                    Productos = productosInsertar
+                };
+
+                contexto.Sucursals.Add(sucursal);
+
+                if (contexto.SaveChanges() > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("No se pudo insertar Sucursal y sus productos");
+                }
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+        // Método simplificado
+        // En este método vamos a insertar la sucursal y el producto como uno solo,
+        // sino se inserta el producto no se inserta el producto
+        public object AgregarSucursalConProductos(Sucursal sucursal, List<Producto> productos)
+        {
+            try
+            {
+                sucursal.Productos = productos;
+                contexto.Sucursals.Add(sucursal);
+                contexto.Sucursals.Add(sucursal);
+
+                if (contexto.SaveChanges() > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("No se pudo insertar Sucursal y sus productos");
+                }
+            }
+            catch (Exception error)
+            {
+                return error.Message;
+            }
+        }
+
+        // forma compleja
+        public object ActualizarCorreoCliente (int idCliente, string correo)
+        {
+            try
+            {
+                var cliente = contexto.Clientes.FirstOrDefault(C => C.PkCliente == idCliente);
+                if (cliente != null)
+                {
+                    cliente.EmlDirCliente = correo;
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return new Exception("No se pudo actualizar el correo del cliente");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró el cliente especificado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message; ;
+            }
+        }
+
+        // forma recomendada, pero a nivel de recursos NO es recomendable
+        // entity framework evalua "cliente" y como no está completo, es 
+        // un overhead
+        public object ActualizarCorreoCliente(Cliente cliente)
+        {
+            try
+            {
+                // se asume que viene el pk y el correo del cliente (el resto del 
+                var clienteModificar = contexto.Clientes.FirstOrDefault(C => C.PkCliente == cliente.PkCliente);
+                if (clienteModificar != null)
+                {
+                    clienteModificar.EmlDirCliente = cliente.EmlDirCliente;
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return new Exception("No se pudo actualizar el correo del cliente");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró el cliente especificado");
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message; ;
+            }
+        }
         #endregion
+
+
 
     }
 
