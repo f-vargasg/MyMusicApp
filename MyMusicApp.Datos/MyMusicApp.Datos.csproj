@@ -13,4 +13,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyMusicApp.DTO\MyMusicApp.DTO.csproj" />
+  </ItemGroup>
+
 </Project>

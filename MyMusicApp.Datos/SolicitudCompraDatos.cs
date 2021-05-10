@@ -1,4 +1,5 @@
 ﻿using MyMusicApp.Datos.MyMusicModel;
+using MyMusicApp.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -232,6 +233,254 @@ namespace MyMusicApp.Datos
                 return error.Message;
             }
         }
+
+        
+        /// <summary>
+        /// 3a. Registro de una solicitud de compra por primera vez, registrando todos los datos menos el vendedor
+        /// </summary>
+        /// <param name="fecOrden"></param>
+        /// <param name="tipEntrega"></param>
+        /// <param name="idCliente"></param>
+        /// <param name="mtoTotalOrden"></param>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        public RespuestaDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente,  decimal mtoTotalOrden, 
+                                                   int indEstado)
+        {
+            try
+            {
+                var ordenCompra = new OrdenCompra
+                {
+                    FecOrden = fecOrden, 
+                    TipEntrega = tipEntrega,
+                    FkCliente = idCliente,
+                    MntTotalOrden = mtoTotalOrden,
+                    IndEstado =indEstado
+                };
+                contexto.OrdenCompras.Add(ordenCompra);
+
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se pudo guardar la orden de compra, por favor revisar los datos suministrados");
+                }
+
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 3b. Registro de solicitud de compra por primera vez, registrando todos los datos incluido el vendedor
+        /// </summary>
+        /// <param name="fecOrden"></param>
+        /// <param name="tipEntrega"></param>
+        /// <param name="idCliente"></param>
+        /// <param name="mtoTotalOrden"></param>
+        /// <param name="idVendedor"></param>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        public RespuestaDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente, decimal mtoTotalOrden,
+                                                   int idVendedor,   int indEstado)
+        {
+            try
+            {
+                var ordenCompra = new OrdenCompra
+                {
+                    FecOrden = fecOrden,
+                    TipEntrega = tipEntrega,
+                    FkCliente = idCliente,
+                    MntTotalOrden = mtoTotalOrden,
+                    FkVendedor = idVendedor,
+                    IndEstado = indEstado
+                };
+                contexto.OrdenCompras.Add(ordenCompra);
+
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se pudo guardar la orden de compra, por favor revisar los datos suministrados");
+                }
+
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 3.c Actualización del Vendedor asignado a la solicitud de compra
+        /// </summary>
+        /// <param name="idOrdenCompra"></param>
+        /// <param name="idVendedor"></param>
+        /// <returns></returns>
+        public RespuestaDTO ActualizarVendedorOrdenCompra(int idOrdenCompra, int idVendedor)
+        {
+            try
+            {
+                var ordenCompra = contexto.OrdenCompras.FirstOrDefault(S => S.PkOrdenCompra == idOrdenCompra);
+                if (ordenCompra != null)
+                {
+                    // Hacemos la actualizacion
+                    ordenCompra.FkVendedor = idVendedor;
+
+
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = ordenCompra
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el vendedor de la orden compra, por favor revise los datos suministrados");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("No se encontró la orden de compra con el código suministrado");
+                }
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
+        /// <summary>
+        /// 3d. Actualización del Estado de la orden compra
+        /// </summary>
+        /// <param name="idOrdenCompra"></param>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        public RespuestaDTO ActualizarEstadoOrdenCompra(int idOrdenCompra, int indEstado)
+        {
+            try
+            {
+                var ordenCompra = contexto.OrdenCompras.FirstOrDefault(S => S.PkOrdenCompra == idOrdenCompra);
+                if (ordenCompra != null)
+                {
+                    // Hacemos la actualizacion
+                    ordenCompra.IndEstado = indEstado;
+
+
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = ordenCompra
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el estado de la orden compra, por favor revise los datos suministrados");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("No se encontró la orden de compra con el código suministrado");
+                }
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
 
         #endregion
     }

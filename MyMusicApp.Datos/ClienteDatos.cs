@@ -1,4 +1,5 @@
 ﻿using MyMusicApp.Datos.MyMusicModel;
+using MyMusicApp.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,6 +102,162 @@ namespace MyMusicApp.Datos
                 return error.Message;
             }
         }
+
+        /// <summary>
+        /// 1.a Registro de un cliente por primera vez
+        /// </summary>
+        /// <param name="cliente"></param>
+        /// <returns></returns>
+        public RespuestaDTO AgregarCliente(Cliente cliente)
+        {
+            try
+            {
+                contexto.Clientes.Add(cliente);
+                var guardado = contexto.SaveChanges();
+                if (guardado > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se pudo insertar cliente");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 1.b Actualizar datos 
+        /// </summary>
+        /// <returns></returns>
+        public RespuestaDTO ActualizarDatoContactoCliente(int idCliente, string telefono, string email)
+        {
+            try
+            {
+                var cliente = contexto.Clientes.FirstOrDefault(C => C.PkCliente == idCliente);
+                if (cliente != null)
+                {
+                    cliente.TelCliente = telefono;
+                    cliente.EmlDirCliente = email;
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = cliente
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el Contacto del cliente");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró el cliente especificado");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
+        /// <summary>
+        /// 1.c Actualización de datos de acceso del cliente (Usuario, Contraseña).
+        /// </summary>
+        /// <param name="idCliente"></param>
+        /// <param name="usuario"></param>
+        /// <param name="contrasena"></param>
+        /// <returns></returns>
+        public RespuestaDTO ActualizarDatoAccesoCliente(int idCliente, string usuario, string contrasena)
+        {
+            try
+            {
+                var cliente = contexto.Clientes.FirstOrDefault(C => C.PkCliente == idCliente);
+                if (cliente != null)
+                {
+                    cliente.UsrCliente = usuario;
+                    cliente.EmlDirCliente = contrasena;
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = cliente
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el Contacto del cliente");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró el cliente especificado");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
         #endregion
     }
 }

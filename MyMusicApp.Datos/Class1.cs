@@ -3,6 +3,7 @@ using MyMusicApp.Datos.MyMusicModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using MyMusicApp.DTO;
 
 namespace MyMusicApp.Datos
 {
@@ -25,7 +26,7 @@ namespace MyMusicApp.Datos
         #endregion
 
         #region Metodos
-        public object ListarProductos()
+        public RespuestaDTO ListarProductos()
         {
             try
             {
@@ -33,7 +34,11 @@ namespace MyMusicApp.Datos
                 var productos = contexto.Productos.ToList();
                 if (productos.Count > 0)
                 {
-                    return productos;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = productos
+                    };
                 }
                 else
                 {
@@ -42,31 +47,42 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                };
             }
         }
 
-        public object ListarProductosPorTipo(int tipo)
+        public RespuestaDTO ListarProductosPorTipo(int tipo)
         {
+            RespuestaDTO respuesta = new RespuestaDTO();
             try
             {
+
+
                 var productosPorTipo = contexto.Productos.Where(P => P.TipProducto == tipo).ToList();
                 if (productosPorTipo.Count > 0)
                 {
-                    return productosPorTipo;
+                    respuesta.ContenidoRespuesta = 1;
+                    respuesta.ContenidoRespuesta = productosPorTipo;
+                    return respuesta;
                 }
                 else
                 {
                     throw new Exception("No se encontraron productos para el tipo indicado en la base de datos");
                 }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                throw;
+                respuesta.CodigoRespuesta = -1;
+                respuesta.ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message };
+                return respuesta;
             }
         }
 
-        public object ObtenerProductoPorCodigo(int codigo)
+        public RespuestaDTO ObtenerProductoPorCodigo(int codigo)
         {
             try
             {
@@ -77,7 +93,11 @@ namespace MyMusicApp.Datos
                 var producto = contexto.Productos.FirstOrDefault(P => P.PkProducto == codigo);
                 if (producto != null)
                 {
-                    return producto;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = producto
+                    };
                 }
                 else
                 {
@@ -87,10 +107,25 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                var excepcionalError = new Exception("Error Desconocido");
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = excepcionalError.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
             }
         }
-
         public void ListarProductosPorSucursal(int codigoSucursal)
         {
             try
@@ -161,7 +196,7 @@ namespace MyMusicApp.Datos
         }
 
         // Método con parametros anónimos
-        public object FiltrarProductosPorParametros(string nombreParametro, object datoParametro, List<Producto> datosPrevios)
+        public RespuestaDTO FiltrarProductosPorParametros(string nombreParametro, object datoParametro, List<Producto> datosPrevios)
         {
             try
             {
@@ -190,12 +225,17 @@ namespace MyMusicApp.Datos
                             /*datosPrevios = datosPrevios.Where(P => P.MtoPrecioUnitario >= valoresDouble.ElementAt(0)
                                                                       && P.MtoPrecioUnitario <= valoresDouble.ElementAt(1)).ToList(); */
                             datosPrevios = datosPrevios.Where(P => P.MtoPrecioUnitario >= valoresDecimal.ElementAt(0)
-                                          && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList(); 
+                                          && P.MtoPrecioUnitario <= valoresDecimal.ElementAt(1)).ToList();
                             break;
                         default:
                             break;
                     }
-                    return datosPrevios;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = datosPrevios
+                    };
+                      
                 }
                 else
                 {
@@ -221,18 +261,37 @@ namespace MyMusicApp.Datos
                             break;
                     }
                 }
-                return respuesta;
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = 1,
+                    ContenidoRespuesta = respuesta
+                };
             }
             catch (Exception error)
             {
-                return error.Message;
-                throw;
+                var excepcionalError = new Exception("Error Desconocido");
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = excepcionalError.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
             }
         }
 
 
         // Metodo con parametros opcionales
-        public object FiltrarProductosPorParametros(string nombre = null, int tipo = 0, int sucursal = 0,
+        public RespuestaDTO FiltrarProductosPorParametros(string nombre = null, int tipo = 0, int sucursal = 0,
                                                       List<decimal> rangos = null)
         {
             try
@@ -281,16 +340,36 @@ namespace MyMusicApp.Datos
                                                              P.MtoPrecioUnitario <= rangos.ElementAt(1)).ToList();
                     }
                 }
-                return respuesta;
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = 1,
+                    ContenidoRespuesta = respuesta
+                };
             }
             catch (Exception error)
             {
-                return error.Message;
+                var excepcionalError = new Exception("Error Desconocido");
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = excepcionalError.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
             }
         }
 
 
-        public object AgregarSucursal(string ubicacion, string horario, string telefono, string correo)
+        public RespuestaDTO AgregarSucursal(string ubicacion, string horario, string telefono, string correo)
         {
             try
             {
@@ -307,23 +386,43 @@ namespace MyMusicApp.Datos
 
                 if (guardado > 0)
                 {
-                    return true;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+                    };
                 }
                 else
                 {
                     throw new Exception("No se pudo guardar la sucursal, por favor revisar los datos suministrados");
                 }
-    
-                return true;
+
+                // return true;
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
             }
         }
 
 
-        public object ActualizarDatosSucursal(int codigo, string ubicacion, string telefono, string correo,
+        public RespuestaDTO ActualizarDatosSucursal(int codigo, string ubicacion, string telefono, string correo,
                                               string horario)
         {
             try
@@ -337,30 +436,49 @@ namespace MyMusicApp.Datos
                     sucursal.EmlSucursal = correo;
                     sucursal.DesHorario = horario;
 
-                    
-                    if (contexto.SaveChanges() >0)
+
+                    if (contexto.SaveChanges() > 0)
                     {
-                        return true;
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = sucursal
+                        };
                     }
                     else
                     {
                         throw new Exception("No se pudo actualizar la sucursal, por favor revise los datos suministrados");
-                    } 
+                    }
 
                 }
                 else
                 {
                     throw new Exception("No se encontró la sucursal con el código suministrado");
                 }
-                return true;
+                // return true;
             }
             catch (Exception error)
             {
-               return  error.Message;
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
-        public object RegistrarSucursalConVendedorEncargado (string telefonoSucursal, string ubicacionSucursal,
+        public RespuestaDTO RegistrarSucursalConVendedorEncargado(string telefonoSucursal, string ubicacionSucursal,
                                                            string correoSucursal, string horarioSucursal,
                                                            string nombreVendedor, string ptoVendedor,
                                                            string userVendedor, string passVendedor)
@@ -385,8 +503,8 @@ namespace MyMusicApp.Datos
                         UsrPassword = userVendedor
                     });
                 ;
-                var guardado  = contexto.SaveChanges();
-                if (guardado > 0 )
+                var guardado = contexto.SaveChanges();
+                if (guardado > 0)
                 {
                     if (guardado == 1)
                     {
@@ -394,7 +512,13 @@ namespace MyMusicApp.Datos
                     }
                     else
                     {
-                        return true;
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = guardado,
+                            Mensaje = "Los datos se guardaron correctamente"
+
+                        };
                     }
                 }
                 else
@@ -402,22 +526,43 @@ namespace MyMusicApp.Datos
                     throw new Exception("No se puedo guardar la información suministrada");
                 }
             }
-            catch (Exception)
+            catch (Exception error)
             {
-
-                throw;
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
             }
         }
 
-       
-        public object AgregarCliente(Cliente cliente)
+
+        public RespuestaDTO AgregarCliente(Cliente cliente)
         {
             try
             {
                 contexto.Clientes.Add(cliente);
-                if (contexto.SaveChanges() >0)
+                var guardado = contexto.SaveChanges();
+                if (guardado > 0)
                 {
-                    return true;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+
+                    };
                 }
                 else
                 {
@@ -426,15 +571,29 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-
-                return error.Message;
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
             }
         }
 
         // forma "compleja"
         // En este método vamos a insertar la sucursal y el producto como uno solo,
         // sino se inserta el producto no se inserta el producto
-        public object AgregarSucursalConProductos(string telefonoSucursal, string ubicacionSucursal,
+        public RespuestaDTO AgregarSucursalConProductos(string telefonoSucursal, string ubicacionSucursal,
                                                   string correoSucursal, string horarioSucursal,
                                                   string nombreProducto, int tipoProducto, int cantidadProducto,
                                                   decimal montoProducto)
@@ -464,9 +623,17 @@ namespace MyMusicApp.Datos
 
                 contexto.Sucursals.Add(sucursal);
 
-                if (contexto.SaveChanges() > 0)
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
                 {
-                    return true;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+
+                    };
                 }
                 else
                 {
@@ -475,24 +642,46 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
             }
         }
 
         // Método simplificado
         // En este método vamos a insertar la sucursal y el producto como uno solo,
         // sino se inserta el producto no se inserta el producto
-        public object AgregarSucursalConProductos(Sucursal sucursal, List<Producto> productos)
+        public RespuestaDTO AgregarSucursalConProductos(Sucursal sucursal, List<Producto> productos)
         {
             try
             {
                 sucursal.Productos = productos;
                 contexto.Sucursals.Add(sucursal);
-                contexto.Sucursals.Add(sucursal);
 
-                if (contexto.SaveChanges() > 0)
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
                 {
-                    return true;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+
+                    };
                 }
                 else
                 {
@@ -501,12 +690,28 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
             }
         }
 
-        // forma compleja
-        public object ActualizarCorreoCliente (int idCliente, string correo)
+        // forma compleja, ya que se especifica qué es lo que se va a modifcar (NO es todo)
+        // en este caso solo se actualiza el correo
+        public RespuestaDTO ActualizarCorreoCliente(int idCliente, string correo)
         {
             try
             {
@@ -516,11 +721,15 @@ namespace MyMusicApp.Datos
                     cliente.EmlDirCliente = correo;
                     if (contexto.SaveChanges() > 0)
                     {
-                        return true;
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = cliente
+                        };
                     }
                     else
                     {
-                        return new Exception("No se pudo actualizar el correo del cliente");
+                        throw new Exception("No se pudo actualizar el correo del cliente");
                     }
                 }
                 else
@@ -528,13 +737,28 @@ namespace MyMusicApp.Datos
                     throw new Exception("No se encontró el cliente especificado");
                 }
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                return ex.Message; ;
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message  }
+                    };
+                }
             }
         }
 
-        // forma recomendada, pero a nivel de recursos NO es recomendable
+        // forma simplificada, pero a nivel de recursos NO es recomendable
         // entity framework evalua "cliente" y como no está completo, es 
         // un overhead
         public object ActualizarCorreoCliente(Cliente cliente)
