@@ -7,19 +7,19 @@ using MyMusicApp.DTO;
 
 namespace MyMusicApp.Datos
 {
-    public class Class1
+    public class ClaseEjemploDatos
     {
         #region Variables
         DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
         #endregion
 
         #region Constructor
-        public Class1(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public ClaseEjemploDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }
 
-        public Class1()
+        public ClaseEjemploDatos()
         {
 
         }
@@ -124,6 +124,35 @@ namespace MyMusicApp.Datos
                         ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
                     };
                 }
+            }
+        }
+        
+        public RespuestaDTO ObtenerSucursalPorCodigo(int codigo)
+        {
+            try
+            {
+                var sucursal = contexto.Sucursals.FirstOrDefault(S => S.PkSucursal == codigo);
+                if (sucursal != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = sucursal
+                    };
+
+                }
+                else
+                {
+                    throw new Exception("No se encontraron sucursales con ese codigo");
+                }
+            }
+            catch (Exception ex )
+             {
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO { MensajeError = ex.Message }
+                };
             }
         }
         public void ListarProductosPorSucursal(int codigoSucursal)
