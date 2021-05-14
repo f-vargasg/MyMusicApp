@@ -126,7 +126,7 @@ namespace MyMusicApp.Datos
                 }
             }
         }
-        
+
         public RespuestaDTO ObtenerSucursalPorCodigo(int codigo)
         {
             try
@@ -146,8 +146,8 @@ namespace MyMusicApp.Datos
                     throw new Exception("No se encontraron sucursales con ese codigo");
                 }
             }
-            catch (Exception ex )
-             {
+            catch (Exception ex)
+            {
                 return new RespuestaDTO
                 {
                     CodigoRespuesta = -1,
@@ -264,7 +264,7 @@ namespace MyMusicApp.Datos
                         CodigoRespuesta = 1,
                         ContenidoRespuesta = datosPrevios
                     };
-                      
+
                 }
                 else
                 {
@@ -781,7 +781,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = -1,
-                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message  }
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
                     };
                 }
             }
@@ -818,12 +818,68 @@ namespace MyMusicApp.Datos
                 return ex.Message; ;
             }
         }
+
+        public RespuestaDTO ListarVendedorDeSucursales()
+        {
+            try
+            {
+                var sucursalesVendedores = contexto.Sucursals.Include(V => V.Vendedors).ToList();
+                if (sucursalesVendedores.Count > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        ContenidoRespuesta = 1,
+                        //TODO: CodigoRespuesta = sucursalesV
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontró ninguna información");
+                }
+            }
+            catch (Exception error)
+            {
+
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                };
+            }
+        }
+
+
+
+        public RespuestaDTO CalcularVentasAcum()
+        {
+            
+            try
+            {
+                var calculoVentas = contexto.DetalleCompras.Sum(D => D.FkProductoNavigation.MtoPrecioUnitario);
+                if (calculoVentas > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = calculoVentas
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se tienen datos de ventas acumuladas");
+                }
+            }
+            catch (Exception error)
+            {
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                };
+            }
+        }
         #endregion
-
-
-
     }
-
 }
 
 
