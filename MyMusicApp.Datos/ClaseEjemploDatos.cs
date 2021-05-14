@@ -848,11 +848,8 @@ namespace MyMusicApp.Datos
             }
         }
 
-
-
         public RespuestaDTO CalcularVentasAcum()
         {
-            
             try
             {
                 var calculoVentas = contexto.DetalleCompras.Sum(D => D.FkProductoNavigation.MtoPrecioUnitario);
