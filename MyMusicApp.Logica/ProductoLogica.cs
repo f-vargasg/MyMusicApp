@@ -52,28 +52,23 @@ namespace MyMusicApp.Logica
 
         #region Funcion
 
-        public BaseDTO AgregarProducto (ProductoDTO productoDTO)
+
+        public BaseDTO ObtenerProductoPorCodigo(int codigo)
         {
             try
             {
-                var intermedia = new ProductoDatos(contexto);
+                ProductoDatos intermedioProducto = new ProductoDatos();
 
-                var productoDato = ConvertirDTOProductoADatos(productoDTO);
-
-                var resultado = intermedia.AgregarProducto(productoDato);
-
-                if (resultado.CodigoRespuesta != -1)
+                var respuestaDatos = intermedioProducto.ObtenerProductoPorCodigo(codigo);
+                if (respuestaDatos.CodigoRespuesta == 1)
                 {
-                    // exito
-                    return new BaseDTO
-                    {
-                        Mensaje = resultado.Mensaje + " Se actualizó un total de " + resultado.ContenidoRespuesta +
-                                  " datos."
-                    };
+                    var solicitudCompraDTO = ConvertirDatosProductoADTO((Producto)respuestaDatos.ContenidoRespuesta);
+
+                    return solicitudCompraDTO;
                 }
                 else
                 {
-                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                    return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
                 }
             }
             catch (Exception error)
@@ -81,38 +76,6 @@ namespace MyMusicApp.Logica
                 return new ErrorDTO { MensajeError = error.Message };
             }
         }
-
-
-
-        public BaseDTO ActualizarCantidadPrecioProductoSucursal(int idProducto, int idSucursal, 
-                                                                int cantidad, decimal precio)
-        {
-            try
-            {
-                var intermedia = new ProductoDatos(contexto);
-
-                var resultado = intermedia.ActualizarCantidadPrecioProductoSucursal(idProducto, idSucursal, cantidad, precio);
-
-                if (resultado.CodigoRespuesta != -1)
-                {
-                    // exito
-                    return new BaseDTO
-                    {
-                        Mensaje = resultado.Mensaje + " Se actualizó un total de " + resultado.ContenidoRespuesta +
-                                  " datos."
-                    };
-                }
-                else
-                {
-                    return (ErrorDTO)resultado.ContenidoRespuesta;
-                }
-            }
-            catch (Exception error)
-            {
-                return new ErrorDTO { MensajeError = error.Message };
-            }
-        }
-
 
 
         public List<BaseDTO> FiltrarProductosPorParametros(string nombreProducto, int tipoProducto,
@@ -169,7 +132,64 @@ namespace MyMusicApp.Logica
                 return respuesta;
             }
         }
+        public BaseDTO AgregarProducto(ProductoDTO productoDTO)
+        {
+            try
+            {
+                var intermedia = new ProductoDatos(contexto);
 
+                var productoDato = ConvertirDTOProductoADatos(productoDTO);
+
+                var resultado = intermedia.AgregarProducto(productoDato);
+
+                if (resultado.CodigoRespuesta != -1)
+                {
+                    // exito
+                    return new BaseDTO
+                    {
+                        Mensaje = resultado.Mensaje + " Se actualizó un total de " + resultado.ContenidoRespuesta +
+                                  " datos."
+                    };
+                }
+                else
+                {
+                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
+        public BaseDTO ActualizarCantidadPrecioProductoSucursal(int idProducto, int idSucursal,
+                                                        int cantidad, decimal precio)
+        {
+            try
+            {
+                var intermedia = new ProductoDatos(contexto);
+
+                var resultado = intermedia.ActualizarCantidadPrecioProductoSucursal(idProducto, idSucursal, cantidad, precio);
+
+                if (resultado.CodigoRespuesta != -1)
+                {
+                    // exito
+                    return new BaseDTO
+                    {
+                        Mensaje = resultado.Mensaje + " Se actualizó un total de " + resultado.ContenidoRespuesta +
+                                  " datos."
+                    };
+                }
+                else
+                {
+                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
 
         #endregion
         #endregion

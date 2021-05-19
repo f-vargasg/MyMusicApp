@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyMusicApp.DTO
 {
-    public class SolicitudEnvioDTO
+    public class SolicitudEnvioDTO : BaseDTO
     {
 
         [Required(ErrorMessage = "No se puede guardar una Solicitud de Envio sin ubicacion")]
