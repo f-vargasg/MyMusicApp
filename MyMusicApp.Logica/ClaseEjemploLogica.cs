@@ -59,6 +59,17 @@ namespace MyMusicApp.Logica
             };
         }
 
+        internal static Producto ConvertirDTOProductoADatos(ProductoDTO item)
+        {
+            return new Producto
+            {
+                CntProducto = item.CantidadInventario,
+                TipProducto = item.TipoProducto,
+                MtoPrecioUnitario = item.PrecioUnitario,
+                NomProducto = item.NombreProducto
+            };
+        }
+
         internal static VendedorDTO ConvertirDatosVendedorADTO(Vendedor vendedor)
         {
             return new VendedorDTO
@@ -70,6 +81,8 @@ namespace MyMusicApp.Logica
                 UsuarioVendedor = vendedor.UsrVendedor
             }; 
         }
+
+        
 
         #endregion
 
@@ -228,7 +241,6 @@ namespace MyMusicApp.Logica
             }
         }
 
-
         public BaseDTO CalcularVentasAcumuladas()
         {
             try
@@ -253,6 +265,131 @@ namespace MyMusicApp.Logica
                 return new ErrorDTO { MensajeError = error.Message };
             }
         }
+
+        public BaseDTO AgregarSucursalConProducto(SucursalDTO sucursal, List<ProductoDTO> productos)
+        {
+            try
+            {
+                var intermedia = new ClaseEjemploDatos(contexto);
+
+                var sucursalDato = ConvertirSucursalDTOaDatos(sucursal);
+
+                List<Producto> listadoProductosDatos = new List<Producto>();
+                foreach (var item in productos)
+                {
+                    // primer opcion
+                    //var temp = ConvertirDTOProductoADatos(item);  
+                    // listadoProductosDatos.Add(temp);
+                    
+                    // segunda opcion
+                    listadoProductosDatos.Add(ConvertirDTOProductoADatos(item));
+                }
+
+                var resultado = intermedia.AgregarSucursalConProductos(sucursalDato, listadoProductosDatos);
+
+                if (resultado.CodigoRespuesta != -1)
+                {
+                    // exito
+                    return new BaseDTO
+                    {
+                        Mensaje = resultado.Mensaje + " Se actualizó un total de " + resultado.ContenidoRespuesta +
+                                  " datos."
+                    };
+                }
+                else
+                {
+                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
+        public BaseDTO ActualizarCorreoCliente (int idCliente, string correo)
+        {
+            try
+            {
+                var intermedia = new ClaseEjemploDatos(contexto);
+                var resultado = intermedia.ActualizarCorreoCliente(idCliente, correo);
+                if (resultado.CodigoRespuesta != -1)
+                {
+                   return new BaseDTO
+                    {
+                        Mensaje = "Se actualizó el correo del cliente " +
+                                  ((Cliente)resultado.ContenidoRespuesta).DesCedula + " " +
+                                  ((Cliente)resultado.ContenidoRespuesta).NomCliente 
+                    };
+                }
+                else
+                {
+                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
+        public List<BaseDTO> FiltrarProductosPorParametros(string nombreProducto, int tipoProducto,
+                                                           int sucursal, List<decimal> rangoPrecios)
+        {
+            List<BaseDTO> respuesta = new List<BaseDTO>();
+            try
+            {
+                
+                var intermedio = new ClaseEjemploDatos(contexto);
+                var datosPrevios = new List<Producto>();
+
+                if (nombreProducto != string.Empty || nombreProducto != null)
+                {
+                    datosPrevios = (List<Producto>)intermedio.FiltrarProductosPorParametros("Nombre", nombreProducto, 
+                                                                                            datosPrevios).ContenidoRespuesta;
+                }
+                if (tipoProducto != 0)
+                {
+                    datosPrevios = (List<Producto>)intermedio.FiltrarProductosPorParametros("Tipo", tipoProducto,
+                                                                        datosPrevios).ContenidoRespuesta;
+                }
+
+                if (sucursal != 0)
+                {
+                    datosPrevios = (List<Producto>)intermedio.FiltrarProductosPorParametros("Sucursal", tipoProducto,
+                                                    datosPrevios).ContenidoRespuesta;
+                }
+
+                if (rangoPrecios.Count > 0)
+                {
+                    datosPrevios = (List<Producto>)intermedio.FiltrarProductosPorParametros("Rango", rangoPrecios,
+                                                    datosPrevios).ContenidoRespuesta;
+                }
+
+                if (datosPrevios.Count > 0 )  // return data
+                {
+                    foreach (var item in datosPrevios)
+                    {
+                        respuesta.Add(ConvertirDatosProductoADTO(item));
+                    }
+                    return respuesta;
+                }
+                else
+                {
+                    throw new Exception("No se encontraron resultados con los parametros establecidos");
+                }
+            }
+            catch (Exception error)
+            {
+
+                respuesta.Clear();
+                respuesta.Add(new ErrorDTO { MensajeError = error.Message });
+                return respuesta;
+            }
+        }
+
 
         #endregion
 

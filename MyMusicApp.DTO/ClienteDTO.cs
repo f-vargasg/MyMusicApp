@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyMusicApp.DTO
+{
+    public class ClienteDTO :BaseDTO
+    {
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su identificaicon")]
+        [MaxLength(50, ErrorMessage = "El campo de identificación del cliente no puede ser mayor a 50 caracteres")]
+        [Display(Name = "Identificación del cliente")]
+        public string IdCedula { get; set; }
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su nombre")]
+        [MaxLength(300, ErrorMessage = "El campo de nombre del cliente no puede ser mayor a 300 caracteres")]
+        [Display(Name = "Nombre del cliente")]
+        public string Nombre { get; set; }
+
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su sexo")]
+        [Display(Name = "Sexo del cliente")]
+        public string Sexo { get; set; }
+
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su fecha de nacimiento")]
+        [Display(Name = "Fecha de nacimiento")]
+        // dd/mm/aaaa hh:mm:ss
+        [DisplayFormat(DataFormatString = "{0:yyyy - MM-dd}")]
+        public DateTime FechaNacimiento { get; set; }
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su usuario")]
+        [Display(Name = "Usuario del cliente")]
+        public string UsuarioCliente { get; set; }
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su contraseña")]
+        [Display(Name = "Contraseña del cliente")]
+        public string IdContrasena { get; set; }
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su telefono")]
+        [Display(Name = "Usuario del cliente")]
+        public string Telefono { get; set; }
+
+
+        [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su email")]
+        [Display(Name = "Email del cliente")]
+        public string Email { get; set; }
+    }
+}

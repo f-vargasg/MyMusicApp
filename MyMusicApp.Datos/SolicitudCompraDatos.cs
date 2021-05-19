@@ -28,11 +28,12 @@ namespace MyMusicApp.Datos
 
         #region Método
 
+
         /// <summary>
         /// 3.a Búsqueda de la solicitud de compra por Primary Key
         /// </summary>
         /// <param name="codigo"></param>
-        public object ObtenerSolicitudCompraPorCodigo(int codigo)
+        public RespuestaDTO ObtenerSolicitudCompraPorCodigo(int codigo)
         {
             try
             {
@@ -40,7 +41,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudCompra != null)
                 {
-                    return solicitudCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudCompra
+                    };
                 }
                 else
                 {
@@ -49,14 +54,29 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
         /// <summary>
         /// 3.b. Listado de las solicitudes de compra según su Estado
         /// </summary>
-        public object ListarSolicitudesCompraPorEstado(int estado)
+        public RespuestaDTO ListarSolicitudesCompraPorEstado(int estado)
         {
             try
             {
@@ -64,7 +84,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesCompra.Count > 0)
                 {
-                    return solicitudesCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesCompra
+                    };
                 }
                 else
                 {
@@ -73,14 +97,29 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
         /// <summary>
         /// 3.c. Listado de las solicitudes de compra según el Cliente que las realizó
         /// </summary>
-        public object ListarSolicitudesCompraPorCliente(int cliente)
+        public RespuestaDTO ListarSolicitudesCompraPorCliente(int cliente)
         {
             try
             {
@@ -88,7 +127,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesCompra.Count > 0)
                 {
-                    return solicitudesCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesCompra
+                    };
                 }
                 else
                 {
@@ -97,14 +140,29 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
         /// <summary>
         /// 3.d. Listado de las solicitudes de compra según el Vendedor que se les asignó
         /// </summary>
-        public object ListarSolicitudesCompraPorVendedor(int vendedor)
+        public RespuestaDTO ListarSolicitudesCompraPorVendedor(int vendedor)
         {
             try
             {
@@ -112,7 +170,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesCompra.Count > 0)
                 {
-                    return solicitudesCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesCompra
+                    };
                 }
                 else
                 {
@@ -121,14 +183,29 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
         /// <summary>
         /// 3.e. Listado de las solicitudes de compra según su Tipo de entrega
         /// </summary>
-        public object ListarSolicitudesCompraPorTipoEntrega(int tipEntrega)
+        public RespuestaDTO ListarSolicitudesCompraPorTipoEntrega(int tipEntrega)
         {
             try
             {
@@ -136,7 +213,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesCompra.Count > 0)
                 {
-                    return solicitudesCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesCompra
+                    };
                 }
                 else
                 {
@@ -145,7 +226,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
@@ -153,7 +249,7 @@ namespace MyMusicApp.Datos
         /// 3.f. Listado total de solicitudes de compra
         /// </summary>
         /// <returns></returns>
-        public object ListarTotalSolicitudesCompra()
+        public RespuestaDTO ListarTotalSolicitudesCompra()
         {
             try
             {
@@ -161,7 +257,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesCompra.Count > 0)
                 {
-                    return solicitudesCompra;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesCompra
+                    };
                 }
                 else
                 {
@@ -170,14 +270,30 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
         /// <summary>
         /// 3.g Listado de solicitudes de compra filtradas por alguno o todos los siguientes parámetros: Estado, Tipo de Entrega y un rango de fechas (inicio y final) asociadas a la fecha de solicitud de compra.
         /// </summary>
-        public object FiltrarSolicitudesCompraPorParametros(string nombreParametro, object datoParametro, List<OrdenCompra> datosPrevios)
+        public RespuestaDTO FiltrarSolicitudesCompraPorParametros(string nombreParametro, object datoParametro, 
+                                                                  List<OrdenCompra> datosPrevios)
         {
             try
             {
@@ -204,7 +320,11 @@ namespace MyMusicApp.Datos
                         default:
                             break;
                     }
-                    return datosPrevios;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = datoParametro
+                    };
                 }
                 else
                 {
@@ -225,12 +345,31 @@ namespace MyMusicApp.Datos
                         default:
                             break;
                     }
-                    return respuesta;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = respuesta
+                    };
                 }
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 

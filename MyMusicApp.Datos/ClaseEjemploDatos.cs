@@ -225,7 +225,8 @@ namespace MyMusicApp.Datos
         }
 
         // Método con parametros anónimos
-        public RespuestaDTO FiltrarProductosPorParametros(string nombreParametro, object datoParametro, List<Producto> datosPrevios)
+        public RespuestaDTO FiltrarProductosPorParametros(string nombreParametro, object datoParametro, 
+                                                          List<Producto> datosPrevios)
         {
             try
             {
