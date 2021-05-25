@@ -52,6 +52,38 @@ namespace MyMusicApp.Logica
 
         #region Funcion
 
+        public List<BaseDTO> ListarProductos()
+        {
+            List<BaseDTO> respuesta = new List<BaseDTO>();
+
+            try
+            {
+                ClaseEjemploDatos intermedioDatos = new ClaseEjemploDatos(this.contexto);
+
+                var respuestaDatos = intermedioDatos.ListarProductos();
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var lista = ((List<Producto>)respuestaDatos.ContenidoRespuesta);
+                    for (int i = 0; i < lista.Count; i++)
+                    {
+                        respuesta.Add(ConvertirDatosProductoADTO(lista[i]));
+                    }
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.Clear();
+                    respuesta.Add((ErrorDTO)respuestaDatos.ContenidoRespuesta);
+                    return respuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                respuesta.Clear();
+                respuesta.Add(new ErrorDTO { MensajeError = error.Message });
+                return respuesta;
+            }
+        }
 
         public BaseDTO ObtenerProductoPorCodigo(int codigo)
         {

@@ -225,7 +225,7 @@ namespace MyMusicApp.Datos
         }
 
         // Método con parametros anónimos
-        public RespuestaDTO FiltrarProductosPorParametros(string nombreParametro, object datoParametro, 
+        public RespuestaDTO FiltrarProductosPorParametros(string nombreParametro, object datoParametro,
                                                           List<Producto> datosPrevios)
         {
             try
@@ -876,6 +876,41 @@ namespace MyMusicApp.Datos
                 };
             }
         }
+
+        /*
+        public RespuestaDTO ListarProductos()
+        {
+            try
+            {
+                var resultado = contexto.Productos.ToList();
+
+                if (resultado.Count > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = resultado
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontró ninguna información");
+                }
+            }
+            catch (Exception error)
+            {
+
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO
+                    {
+                        MensajeError = error.Message
+                    }
+                };
+            }
+        }
+        */
         #endregion
     }
 }

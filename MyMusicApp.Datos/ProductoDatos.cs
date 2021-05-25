@@ -28,7 +28,45 @@ namespace MyMusicApp.Datos
 
         #region Método
 
+        public RespuestaDTO ListarProductos()
+        {
+            try
+            {
+                var producto = contexto.Productos.ToList();
 
+                if (producto != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = producto
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontró la sucursal por código en la base de datos [ObtenerSucursalPorCodigo]");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
 
 
         // Laboratorio #1 - 5.a. Búsqueda de productos según su Primary Key
