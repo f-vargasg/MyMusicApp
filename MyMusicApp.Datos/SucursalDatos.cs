@@ -1,4 +1,5 @@
 ﻿using MyMusicApp.Datos.MyMusicModel;
+using MyMusicApp.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,118 @@ namespace MyMusicApp.Datos
 
         #region Método
 
+        public RespuestaDTO AgregarSucursal(string ubicacion, string horario, string telefono, string correo)
+        {
+            try
+            {
+                var sucursal = new Sucursal
+                {
+                    DirUbicacion = ubicacion,
+                    DesHorario = horario,
+                    TelSucursal = telefono,
+                    EmlSucursal = correo,
+                };
+                contexto.Sucursals.Add(sucursal);
+
+                var guardado = contexto.SaveChanges();
+
+                if (guardado > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se pudo guardar la sucursal, por favor revisar los datos suministrados");
+                }
+
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
+            }
+        }
+
+        public RespuestaDTO ActualizarDatosSucursal(int codigo, string ubicacion, string telefono, string correo,
+                                      string horario)
+        {
+            try
+            {
+                var sucursal = contexto.Sucursals.FirstOrDefault(S => S.PkSucursal == codigo);
+                if (sucursal != null)
+                {
+                    // Hacemos la actualizacion
+                    sucursal.DirUbicacion = ubicacion;
+                    sucursal.TelSucursal = telefono;
+                    sucursal.EmlSucursal = correo;
+                    sucursal.DesHorario = horario;
+
+
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = sucursal
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar la sucursal, por favor revise los datos suministrados");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("No se encontró la sucursal con el código suministrado");
+                }
+                // return true;
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
         /// <summary>
         /// 2.a. Listado total de sucursales
         /// </summary>
-        public object ListarTotalSucursales()
+        public RespuestaDTO ListarTotalSucursales()
         {
             try
             {
@@ -38,7 +147,11 @@ namespace MyMusicApp.Datos
 
                 if (sucursales.Count > 0)
                 {
-                    return sucursales;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = sucursales
+                    };
                 }
                 else
                 {
@@ -47,7 +160,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
@@ -55,7 +183,7 @@ namespace MyMusicApp.Datos
         /// 2.b. Búsqueda de sucursal por Primary Key
         /// </summary>
         /// <param name="codigo"></param>
-        public object ObtenerSucursalPorCodigo(int codigo)
+        public RespuestaDTO ObtenerSucursalPorCodigo(int codigo)
         {
             try
             {
@@ -63,7 +191,11 @@ namespace MyMusicApp.Datos
 
                 if (sucursal != null)
                 {
-                    return sucursal;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = sucursal
+                    };
                 }
                 else
                 {
@@ -72,7 +204,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
@@ -82,7 +229,7 @@ namespace MyMusicApp.Datos
         /// <param name="puesto"></param>
         /// <param name="codigoSucursal"></param>
         /// <returns></returns>
-        public object ObtenerSucursalPorUbicacion(string ubicacion)
+        public RespuestaDTO ObtenerSucursalPorUbicacion(string ubicacion)
         {
             try
             {
@@ -90,7 +237,11 @@ namespace MyMusicApp.Datos
 
                 if (sucursal != null)
                 {
-                    return sucursal;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = sucursal
+                    };
                 }
                 else
                 {
@@ -99,7 +250,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 

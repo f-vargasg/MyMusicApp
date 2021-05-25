@@ -1,4 +1,5 @@
 ﻿using MyMusicApp.Datos.MyMusicModel;
+using MyMusicApp.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,48 @@ namespace MyMusicApp.Datos
 
         #region Método
 
+        public RespuestaDTO AgregarVendedor(Vendedor vendedor)
+        {
+            try
+            {
+                contexto.Vendedors.Add(vendedor);
+                var guardado = contexto.SaveChanges();
+                if (guardado > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = guardado,
+                        Mensaje = "Los datos se guardaron correctamente"
+
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se pudo insertar cliente");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.Message.Contains("ERROR controlado"))
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = "ERROR NO CONTROLADO" + error.InnerException }
+                    };
+                }
+            }
+        }
+
         /// <summary>
         /// 4.a Listado total de vendedores
         /// </summary>
@@ -60,7 +103,7 @@ namespace MyMusicApp.Datos
         /// 4.b. Búsqueda de vendedor por Primary Key
         /// </summary>
         /// <param name="codigo"></param>
-        public object ObtenerVendedorPorCodigo(int codigo)
+        public RespuestaDTO ObtenerVendedorPorCodigo(int codigo)
         {
             try
             {
@@ -68,7 +111,11 @@ namespace MyMusicApp.Datos
 
                 if (vendedor != null)
                 {
-                    return vendedor;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = vendedor
+                    };
                 }
                 else
                 {
@@ -77,7 +124,11 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                return new RespuestaDTO
+                {
+                    CodigoRespuesta = -1,
+                    ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                };
             }
         }
 
