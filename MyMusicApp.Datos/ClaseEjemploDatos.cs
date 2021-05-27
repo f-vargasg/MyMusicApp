@@ -782,7 +782,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = -1,
-                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
                     };
                 }
             }

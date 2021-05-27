@@ -16,7 +16,6 @@ namespace MyMusicApp.DTO
         public string CedulaVendedor { get; set; }
 
         [Required(ErrorMessage = "No se puede guardar un vendedor sino coloca su nombre")]
-        [RegularExpression(@"^[A-z][a-z]*$")]
         [MaxLength(80, ErrorMessage = "El campo de nombre del Vendedor no puede ser mayor a 80 caracteres")]
         [Display(Name = "Nombre del vendedor")]
         public string NombreVendedor { get; set; }
@@ -26,7 +25,6 @@ namespace MyMusicApp.DTO
         [MaxLength(100, ErrorMessage = "El campo de puesto del Vendedor no puede ser mayor a 100 caracteres")]
         [Display(Name = "Nom.Puesto del Vendedor")]
         public string Puesto { get; set; }
-
         public SucursalDTO SucursalAsociada { get; set; }
 
         [Required(ErrorMessage = "No se puede guardar un vendedor sino coloca su usuario")]

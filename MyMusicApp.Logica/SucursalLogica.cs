@@ -50,6 +50,7 @@ namespace MyMusicApp.Logica
         #endregion
 
         #region Funcion
+
         public BaseDTO ObtenerSucursalPorCodigo(int codigoSucursal)
         {
             try
@@ -103,6 +104,39 @@ namespace MyMusicApp.Logica
             catch (Exception error)
             {
                 return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
+        public List<BaseDTO> ListarTotalSucursales()
+        {
+            List<BaseDTO> respuesta = new List<BaseDTO>();
+
+            try
+            {
+                SucursalDatos intermedioDatos = new SucursalDatos(this.contexto);
+
+                var respuestaDatos = intermedioDatos.ListarTotalSucursales();
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var lista = ((List<Sucursal>)respuestaDatos.ContenidoRespuesta);
+                    for (int i = 0; i < lista.Count; i++)
+                    {
+                        respuesta.Add(ConvertirDatosSucursalADTO(lista[i]));
+                    }
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.Clear();
+                    respuesta.Add((ErrorDTO)respuestaDatos.ContenidoRespuesta);
+                    return respuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                respuesta.Clear();
+                respuesta.Add(new ErrorDTO { MensajeError = error.Message });
+                return respuesta;
             }
         }
 

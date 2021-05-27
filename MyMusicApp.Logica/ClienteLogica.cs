@@ -173,6 +173,34 @@ namespace MyMusicApp.Logica
             }
         }
 
+        public BaseDTO ActualizarCorreoCliente(int idCliente, string correo)
+        {
+            try
+            {
+                var intermedia = new ClienteDatos(contexto);
+
+                var resultado = intermedia.ActualizarCorreoCliente(idCliente, correo);
+
+                if (resultado.CodigoRespuesta != -1)
+                {
+                    //Caso de éxito
+                    return new BaseDTO
+                    {
+                        Mensaje = "Se actualizó la información del cliente: " + ((Cliente)resultado.ContenidoRespuesta).NomCliente
+                    };
+                }
+                else
+                {
+                    //Error controlado
+                    return (ErrorDTO)resultado.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
         public BaseDTO ActualizarDatoContactoCliente(int idCliente, string telefono, string email)
         {
             try

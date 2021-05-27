@@ -25,6 +25,7 @@ namespace MyMusicApp.Logica
 
         #region Metodos
         #region Conversiones
+
         internal static VendedorDTO ConvertirDatosVendedorADTO(Vendedor vendedor)
         {
             return new VendedorDTO
@@ -33,8 +34,7 @@ namespace MyMusicApp.Logica
                 IdEntidad = vendedor.PkVendedor,
                 NombreVendedor = vendedor.NomVendedor,
                 Puesto = vendedor.DesPuesto,
-                UsuarioVendedor = vendedor.UsrVendedor,
-                SucursalAsociada = (vendedor.FkSucursalNavigation != null ? SucursalLogica.ConvertirDatosSucursalADTO(vendedor.FkSucursalNavigation) : null)
+                UsuarioVendedor = vendedor.UsrVendedor
             };
         }
 
@@ -42,9 +42,11 @@ namespace MyMusicApp.Logica
         {
             return new Vendedor
             {
+                NomVendedor = vendedorDTO.NombreVendedor,
                 CodCedula = vendedorDTO.CedulaVendedor,
                 DesPuesto = vendedorDTO.Puesto,
-
+                UsrVendedor = vendedorDTO.UsuarioVendedor,
+                UsrPassword = vendedorDTO.ClaveVendedor
             };
         }
 

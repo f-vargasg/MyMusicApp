@@ -44,17 +44,53 @@ namespace MyMusicApp.Servicios.Controllers
                 return resultado.OfType<ProductoDTO>();
             }
 
-           // return new ClaseEjemploLogica().ObtenerProductoPorTipo(id).OfType<ProductoDTO>();
+            // return new ClaseEjemploLogica().ObtenerProductoPorTipo(id).OfType<ProductoDTO>();
         }
+
+        // 
 
         // desarrollar otro metodo GET que nos permita listar las sucursales de la base DTO (sin parametros)
         // Sin utilizaqr GET que viene por defecto en la aplicación
 
+        // En estas clases de ejemplo no existía el método de listar sucursales se utilizará
+        // se utilizará 
+
+        [HttpGet("GetSucursales")]
+        public IEnumerable<BaseDTO> GetSucursales()
+        {
+            return new SucursalLogica().ListarTotalSucursales().OfType<SucursalDTO>();
+        }
+
         // POST api/<MyMusicAppServicesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        /*public void Post([FromBody] string value)
         {
+        } */
+        public BaseDTO Post(int idCliente, string correo)
+        {
+            return new ClaseEjemploLogica().ActualizarCorreoCliente(idCliente, correo);
         }
+
+        /// <summary>
+        /// Respuesta 4
+        /// </summary>
+        /// <param name="vendedorDTO"></param>
+        /// <returns></returns>
+        [HttpPost("PostActVendPorPrimVez")]
+        public BaseDTO PostActVendPorPrimVez (VendedorDTO vendedorDTO)
+        {
+            return new VendedorLogica().RegistrarVendedor(vendedorDTO);
+        }
+
+        [HttpPost("PostActSolEnvPrimVez")]
+        public BaseDTO PostActSolEnvPrimVez(string desUbicacion, DateTime fecEnvio, DateTime fecRecibo,
+                                                  int idOrdenCompra, int indEstado)
+        {
+            return new SolicitudEnvioLogica().AgregarSolicitudEnvio(desUbicacion, fecEnvio, fecRecibo, idOrdenCompra,
+                                                                     indEstado);
+        }
+
+
 
         // PUT api/<MyMusicAppServicesController>/5
         [HttpPut("{id}")]

@@ -27,6 +27,53 @@ namespace MyMusicApp.Datos
 
         #region Metodos
 
+        public RespuestaDTO ActualizarCorreoCliente(int idCliente, string correo)
+        {
+            try
+            {
+                var cliente = contexto.Clientes.FirstOrDefault(C => C.PkCliente == idCliente);
+                if (cliente != null)
+                {
+                    cliente.EmlDirCliente = correo;
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = cliente
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el correo del cliente");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró el cliente especificado");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+            }
+        }
+
         /// <summary>
         /// 1.a. Búsqueda del cliente por cédula
         /// </summary>
@@ -189,7 +236,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = -1,
-                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
                     };
                 }
                 else
@@ -197,7 +244,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = -1,
-                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
                     };
                 }
             }
@@ -244,7 +291,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = -1,
-                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
                     };
                 }
                 else
