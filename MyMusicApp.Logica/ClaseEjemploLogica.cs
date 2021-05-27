@@ -59,14 +59,14 @@ namespace MyMusicApp.Logica
             };
         }
 
-        internal static Producto ConvertirDTOProductoADatos(ProductoDTO item)
+        internal static Producto ConvertirDTOProductoADatos(ProductoDTO productoDTO)
         {
             return new Producto
             {
-                CntProducto = item.CantidadInventario,
-                TipProducto = item.TipoProducto,
-                MtoPrecioUnitario = item.PrecioUnitario,
-                NomProducto = item.NombreProducto
+                CntProducto = productoDTO.CantidadInventario,
+                TipProducto = productoDTO.TipoProducto,
+                MtoPrecioUnitario = productoDTO.PrecioUnitario,
+                NomProducto = productoDTO.NombreProducto
             };
         }
 

@@ -46,7 +46,8 @@ namespace MyMusicApp.Logica
                 CodCedula = vendedorDTO.CedulaVendedor,
                 DesPuesto = vendedorDTO.Puesto,
                 UsrVendedor = vendedorDTO.UsuarioVendedor,
-                UsrPassword = vendedorDTO.ClaveVendedor
+                UsrPassword = vendedorDTO.ClaveVendedor,
+                FkSucursal = vendedorDTO.SucursalAsociada.IdEntidad
             };
         }
 
