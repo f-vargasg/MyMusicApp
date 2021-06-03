@@ -17,7 +17,7 @@ namespace MyMusicApp.DTO
         [MaxLength(5, ErrorMessage = "El campo de Horario no puede ser superior a 5 caracteres")]
         public string HorarioSucursal { get; set; }
 
-        [Display(Name = "Horario de atención:")]
+        [Display(Name = "Telefono:")]
         [MaxLength(10, ErrorMessage = "El teléfono de la sucursal no puede tener mas 10 caracteres")]
         public string TelefonoSucursal { get; set; }
 

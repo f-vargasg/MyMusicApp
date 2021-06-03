@@ -62,17 +62,31 @@ namespace MyMusicApp.Servicios.Controllers
         }
 
         // POST api/<MyMusicAppServicesController>
-        [HttpPost]
-        /*public void Post([FromBody] string value)
+
+        /*[HttpPost]
+         * public void Post([FromBody] string value)
         {
         } */
+
+
+        /// <summary>
+        /// Respuesta 2.4
+        /// </summary>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        [HttpGet("GetSolicitEnvioPorEstado")]
+        public IEnumerable<BaseDTO> GetSolicitEnvioPorEstado(int indEstado)
+        {
+            return new SolicitudEnvioLogica().ListarSolicitudesEnvioPorEstado(indEstado).OfType<SolicitudEnvioDTO>();
+        }
+
         public BaseDTO Post(int idCliente, string correo)
         {
             return new ClaseEjemploLogica().ActualizarCorreoCliente(idCliente, correo);
         }
 
         /// <summary>
-        /// Respuesta 4
+        /// Respuesta 1.4
         /// </summary>
         /// <param name="vendedorDTO"></param>
         /// <returns></returns>
@@ -82,16 +96,24 @@ namespace MyMusicApp.Servicios.Controllers
             return new VendedorLogica().RegistrarVendedor(vendedorDTO);
         }
 
-        [HttpPost("PostActSolEnvPrimVez")]
-        public BaseDTO PostActSolEnvPrimVez(string desUbicacion, DateTime fecEnvio, DateTime fecRecibo,
+        /// <summary>
+        /// 2.4
+        /// </summary>
+        /// <param name="desUbicacion"></param>
+        /// <param name="fecEnvio"></param>
+        /// <param name="fecRecibo"></param>
+        /// <param name="idOrdenCompra"></param>
+        /// <param name="indEstado"></param>
+        /// <returns></returns>
+        [HttpPost("PostAgregarSolEnvPrimVez")]
+        public BaseDTO PostAgregarSolEnvPrimVez(string desUbicacion, DateTime fecEnvio, DateTime fecRecibo,
                                                   int idOrdenCompra, int indEstado)
         {
             return new SolicitudEnvioLogica().AgregarSolicitudEnvio(desUbicacion, fecEnvio, fecRecibo, idOrdenCompra,
                                                                      indEstado);
         }
 
-
-
+        
         // PUT api/<MyMusicAppServicesController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)

@@ -57,7 +57,7 @@ namespace MyMusicApp.Datos
         /// </summary>
         /// <param name="indEstado"></param>
         /// <returns></returns>
-        public object ListarSolicitudesEnvioPorEstado(int indEstado)
+        public RespuestaDTO ListarSolicitudesEnvioPorEstado(int indEstado)
         {
             try
             {
@@ -65,16 +65,35 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesEnvio.Count > 0)
                 {
-                    return solicitudesEnvio;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesEnvio
+                    };
                 }
                 else
                 {
-                    return new Exception("No existe solicitudes de envio por el estado indicado");
+                    throw new Exception("No se encontraron las solicitudes de envio por estado [ListarSolicitudesCompraPorEstado]");
                 }
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                return ex.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
@@ -82,7 +101,7 @@ namespace MyMusicApp.Datos
         /// 5.c. Listado total de solicitudes de envío.
         /// </summary>
         /// <returns></returns>
-        public object ListarTotalSolicitudesEnvio()
+        public RespuestaDTO ListarTotalSolicitudesEnvio()
         {
             try
             {
@@ -90,7 +109,11 @@ namespace MyMusicApp.Datos
 
                 if (solicitudesEnvio.Count > 0)
                 {
-                    return solicitudesEnvio;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesEnvio
+                    };
                 }
                 else
                 {
@@ -99,7 +122,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 

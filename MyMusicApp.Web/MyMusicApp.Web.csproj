@@ -9,10 +9,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyMusicApp.Datos\MyMusicApp.Datos.csproj" />
+    <ProjectReference Include="..\MyMusicApp.DTO\MyMusicApp.DTO.csproj" />
+    <ProjectReference Include="..\MyMusicApp.Logica\MyMusicApp.Logica.csproj" />
   </ItemGroup>
 
 </Project>

@@ -179,6 +179,35 @@ namespace MyMusicApp.Logica
                 return new ErrorDTO { MensajeError = error.Message };
             }
         }
+
+        public List<BaseDTO> ListarSolicitudesEnvioPorEstado(int indEstado)
+        {
+            try
+            {
+                SolicitudEnvioDatos intermedioEjemplo = new SolicitudEnvioDatos();
+
+                var respuestaDatos = intermedioEjemplo.ListarSolicitudesEnvioPorEstado(indEstado);
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    List<BaseDTO> respSolicitudEnvio = new List<BaseDTO>();
+                    foreach (var item in (List<SolicitudEnvioDomic>)respuestaDatos.ContenidoRespuesta)
+                    {
+                        respSolicitudEnvio.Add(ConvertirDatosSolicitudEnvioADTO(item));
+                    }
+                    return respSolicitudEnvio;
+                }
+                else
+                {
+                    throw new Exception(((ErrorDTO)respuestaDatos.ContenidoRespuesta).MensajeError); // opcion 2
+                }
+            }
+            catch (Exception error)
+            {
+                return new List<BaseDTO> { new ErrorDTO { MensajeError = error.Message } };
+            }
+        }
+
+        
         #endregion
         #endregion
     }
