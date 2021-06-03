@@ -105,7 +105,7 @@ namespace MyMusicApp.Datos
         /// </summary>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public object ObtenerClientePorCodigo(int codigo)
+        public RespuestaDTO ObtenerClientePorCodigo(int codigo)
         {
             try
             {
@@ -113,7 +113,11 @@ namespace MyMusicApp.Datos
 
                 if (cliente != null)
                 {
-                    return cliente;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = cliente
+                    };
                 }
                 else
                 {
@@ -122,7 +126,22 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
 
@@ -166,7 +185,7 @@ namespace MyMusicApp.Datos
                     return new RespuestaDTO
                     {
                         CodigoRespuesta = 1,
-                        ContenidoRespuesta = guardado,
+                        ContenidoRespuesta = cliente.PkCliente,
                         Mensaje = "Los datos se guardaron correctamente"
 
                     };

@@ -22,6 +22,7 @@ namespace MyMusicApp.DTO
 
 
         [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su sexo")]
+        [MaxLength(1, ErrorMessage = "El campo de sexo del cliente no puede ser mayor a 1 caracter")]
         [Display(Name = "Sexo del cliente")]
         public string Sexo { get; set; }
 
@@ -29,7 +30,7 @@ namespace MyMusicApp.DTO
         [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su fecha de nacimiento")]
         [Display(Name = "Fecha de nacimiento")]
         // dd/mm/aaaa hh:mm:ss
-        [DisplayFormat(DataFormatString = "{0:yyyy - MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su usuario")]
@@ -41,7 +42,8 @@ namespace MyMusicApp.DTO
         public string IdContrasena { get; set; }
 
         [Required(ErrorMessage = "No se puede guardar un cliente sino coloca su telefono")]
-        [Display(Name = "Usuario del cliente")]
+        [MaxLength(8, ErrorMessage = "El campo de telefono del cliente no puede ser mayor a 8 caracteres")]
+        [Display(Name = "Telefono")]
         public string Telefono { get; set; }
 
 

@@ -137,8 +137,8 @@ namespace MyMusicApp.Web.Controllers
         {
             try
             {
-                var resultado = new ClienteLogica();   // TODO: Hacerlo con un AgregarSucursal (SucursalDTO)
-                resultado.AgregarCliente(model);
+                var resultado = new ClienteLogica().AgregarCliente(model);   
+
 
                 if (resultado.GetType() == typeof(ErrorDTO))
                 {
@@ -146,7 +146,8 @@ namespace MyMusicApp.Web.Controllers
                 }
                 else
                 {
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("DetailsCliente", new { id = resultado.IdEntidad });
+                    // return RedirectToAction(nameof(Index));
                 }
 
             }
@@ -156,13 +157,29 @@ namespace MyMusicApp.Web.Controllers
             }
         }
 
+        // GET: ClienteController/Details/5
+        public ActionResult DetailsCliente(int id)
+        {
+            SucursalProductoVM model = new SucursalProductoVM();
+
+            var resultado = new ClienteLogica().ObtenerClientePorCodigo(id);
+
+            if (resultado.GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado;
+            }
+            else
+            {
+                model.Cliente = (ClienteDTO)resultado;
+            }
+            return View(model);
+        }
+
 
         public ActionResult Error(string mensajeError)
         {
             return View();
         }
-
-
 
 
         // GET: ClienteController/Edit/5

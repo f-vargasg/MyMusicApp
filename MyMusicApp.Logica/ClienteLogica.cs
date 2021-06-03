@@ -159,8 +159,10 @@ namespace MyMusicApp.Logica
                     //caso de éxito
                     return new BaseDTO
                     {
-                        Mensaje = resultado.Mensaje + " Se registró un total de " + resultado.ContenidoRespuesta + " datos."
+                        IdEntidad = Convert.ToInt32(resultado.ContenidoRespuesta),
+                        Mensaje = "Se insertaron correctamente los datos."
                     };
+
                 }
                 else
                 {
@@ -250,6 +252,34 @@ namespace MyMusicApp.Logica
                     //Error controlado
                     return (ErrorDTO)resultado.ContenidoRespuesta;
                 }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
+        public BaseDTO ObtenerClientePorCodigo(int idCliente)
+        {
+            try
+            {
+                // Si estoy seguro que voy a utilizar la clase de sucursales, puedo dejar el contexto vació. 
+
+                ClienteDatos intermedio = new ClienteDatos();
+
+                var respuestaDatos = intermedio.ObtenerClientePorCodigo(idCliente);
+
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var clienteRespuesta = ConvertirDatosClienteADTO((Cliente)respuestaDatos.ContenidoRespuesta);
+
+                    return clienteRespuesta;
+                }
+                else
+                {
+                    return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
+                }
+
             }
             catch (Exception error)
             {
