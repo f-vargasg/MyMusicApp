@@ -105,16 +105,16 @@ namespace MyMusicApp.Web.Controllers
         {
             try
             {
-                var resultado = new SucursalLogica();   // TODO: Hacerlo con un AgregarSucursal (SucursalDTO)
-                resultado.AgregarSucursal(model.DirSucursal, model.HorarioSucursal, model.TelefonoSucursal, 
-                                            model.CorreoElectronico);
+                var resultado = new SucursalLogica().AgregarSucursal(model.DirSucursal, model.HorarioSucursal, model.TelefonoSucursal, 
+                                            model.CorreoElectronico);  // TODO: Hacerlo con el parametro sucursaldDTO
                 if (resultado.GetType() == typeof(ErrorDTO))
                 {
                     throw new Exception("Error");
                 }
                 else
                 {
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Details", new { id = resultado.IdEntidad });
+                    // return RedirectToAction(nameof(Index));
                 }
                 
             }
@@ -123,7 +123,9 @@ namespace MyMusicApp.Web.Controllers
                 return View();
             }
         }
-
+        //------------------------------------------------------------------------
+        // Metodos para la entidad cliente 
+        //------------------------------------------------------------------------
         // GET: ClienteController/CreateCliente
         public ActionResult CreateCliente()
         {
