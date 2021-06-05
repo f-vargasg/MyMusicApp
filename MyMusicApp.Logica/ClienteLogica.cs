@@ -266,9 +266,7 @@ namespace MyMusicApp.Logica
                 // Si estoy seguro que voy a utilizar la clase de sucursales, puedo dejar el contexto vació. 
 
                 ClienteDatos intermedio = new ClienteDatos();
-
                 var respuestaDatos = intermedio.ObtenerClientePorCodigo(idCliente);
-
                 if (respuestaDatos.CodigoRespuesta == 1)
                 {
                     var clienteRespuesta = ConvertirDatosClienteADTO((Cliente)respuestaDatos.ContenidoRespuesta);
@@ -279,7 +277,6 @@ namespace MyMusicApp.Logica
                 {
                     return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
                 }
-
             }
             catch (Exception error)
             {
