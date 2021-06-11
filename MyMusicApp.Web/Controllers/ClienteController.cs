@@ -178,6 +178,29 @@ namespace MyMusicApp.Web.Controllers
         }
 
 
+        //GET: ClienteController/ListarSucursales
+        public ActionResult ListarSucursales ()
+        {
+            SucursalProductoVM model = new SucursalProductoVM();
+
+            var resultado = new SucursalLogica().ListarTotalSucursales();
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoSucursales = new List<SucursalDTO>();
+                foreach (var item in resultado)
+                {
+                    var itemConvertido = (SucursalDTO)item;
+                    model.ListadoSucursales.Add(itemConvertido);
+                }
+            }
+            return View(model);
+        }
+
         public ActionResult Error(string mensajeError)
         {
             return View();

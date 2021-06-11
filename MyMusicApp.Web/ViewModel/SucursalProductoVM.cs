@@ -17,6 +17,8 @@ namespace MyMusicApp.Web.ViewModel
 
         public List<ProductoDTO> ListadoProductos { get; set; }
 
+        public List<SucursalDTO> ListadoSucursales { get; set; }
+
         public ErrorDTO Error { get; set; }
 
         public SelectList Tipos { get; set; }

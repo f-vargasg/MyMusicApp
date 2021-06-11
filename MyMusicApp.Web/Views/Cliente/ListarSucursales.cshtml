@@ -1,0 +1,40 @@
+﻿@model MyMusicApp.Web.ViewModel.SucursalProductoVM
+
+@{
+    ViewData["Title"] = "ListarSucursales";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ListarSucursales</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.IdEntidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.DirSucursal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.HorarioSucursal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.TelefonoSucursal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sucursal.CorreoElectronico)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListadoSucursales)
+        {
+            await Html.RenderPartialAsync("_DetalleSucursal", item);
+        }
+    </tbody>
+</table>
