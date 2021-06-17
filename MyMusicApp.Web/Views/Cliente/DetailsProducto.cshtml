@@ -1,0 +1,54 @@
+﻿@model MyMusicApp.Web.ViewModel.CarritoComprasVM
+
+@{
+    ViewData["Title"] = "DetailsProducto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Gestion de productos</h1>
+
+@if (Model.ProductoVista.Mensaje != null)
+{
+    <div><b>@Model.ProductoVista.Mensaje</b></div>
+}
+
+<h4>Detalle del carrito</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="DetailsProducto">
+            <div>
+                <b>@Html.LabelFor(model => model.ProductoVista.IdEntidad)</b>
+                @Html.HiddenFor(model => model.ProductoVista.IdEntidad)
+            </div>
+            <br />
+            <div>
+                @Html.DisplayFor(model => model.ProductoVista.NombreProducto)
+            </div>
+            <div>
+                Tipo Producto: <b>@Enum.GetName(typeof(MyMusicApp.Web.Helpers.TiposProducto), Model.ProductoVista.TipoProducto)</b>
+            </div>
+            <div>
+                Precio: <b>@Model.ProductoVista.PrecioUnitario</b>
+            </div>
+            <br />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CantidadxProducto" class="control-label"></label>
+                <input asp-for="CantidadxProducto" class="form-control" />
+                <span asp-validation-for="CantidadxProducto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Agregar al carrito" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ContenidoCarritoCompras">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

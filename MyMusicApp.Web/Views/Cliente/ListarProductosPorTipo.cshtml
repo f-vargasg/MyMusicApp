@@ -8,6 +8,8 @@
     if (Model.Error == null)
     {
         ViewData["Title"] = "Información de productos por tipo";
+        @*<div> El usuario conectado es @Model.Sucursal.Mensaje </div>*@
+        <div> El usuario conectado es @ViewData["Usuario"] </div>
         <h1>
             Lista de productos por tipo
         </h1>

@@ -16,6 +16,9 @@ namespace MyMusicApp.Web.Controllers
         // GET: ClienteController
         public ActionResult Index()
         {
+
+            SessionHelper.VerificadorUsuario(HttpContext.Session);
+
             SucursalProductoVM model = new SucursalProductoVM();
 
             Random aleatorio = new Random();
@@ -26,9 +29,9 @@ namespace MyMusicApp.Web.Controllers
                 model.Sucursal = new DTO.SucursalDTO
                 {
                     DirSucursal = "Heredia",
-                    HorarioSucursal = "08-17"
-
-                };
+                    HorarioSucursal = "08-17",
+                    Mensaje = HttpContext.Session.GetString("Usuario")
+            };
 
                 model.Producto = new DTO.ProductoDTO
                 {
@@ -39,6 +42,8 @@ namespace MyMusicApp.Web.Controllers
                 };
 
                 model.NombreTipo = Enum.GetName(typeof(TiposProducto), model.Producto.TipoProducto);
+                ViewBag.Usuario = "El usuario conectado es " + HttpContext.Session.GetString("Usuario");
+                ViewBag.TiempoConexion = "El tiempo de conexión es " + DateTime.Now.ToString();
             }
             else
             {
@@ -58,6 +63,9 @@ namespace MyMusicApp.Web.Controllers
         public ActionResult ListarProductosPorTipo(int idProducto)
         {
             SucursalProductoVM model = new SucursalProductoVM();
+
+            SessionHelper.VerificadorUsuario(HttpContext.Session);
+
             var resultado = new ClaseEjemploLogica().ObtenerProductoPorTipo(idProducto);   // Cambiarlo por ListarProductosPorTipo
             if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
             {
@@ -70,6 +78,8 @@ namespace MyMusicApp.Web.Controllers
                 {
                     model.ListadoProductos.Add((ProductoDTO)item);
                 }
+                // model.Sucursal = new SucursalDTO { Mensaje = HttpContext.Session.GetString("Usuario") };
+                ViewData["Usuario"] = "El archivo conectado es: " + HttpContext.Session.GetString("Usuario");
             }
             return View(model);
         }
@@ -204,6 +214,107 @@ namespace MyMusicApp.Web.Controllers
         public ActionResult Error(string mensajeError)
         {
             return View();
+        }
+
+        public ActionResult ListarProductos()
+        {
+            var resultado = new ProductoLogica().ListarProductos();
+            SucursalProductoVM model = new SucursalProductoVM();
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                // mensaje de erorr
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoProductos = new List<ProductoDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoProductos.Add((ProductoDTO)item);
+                }
+                // datos correctos
+            }
+            return View(model);
+        }
+
+        public ActionResult DetailsProducto(int id)
+        {
+            var resultado = new ProductoLogica().ObtenerProductoPorCodigo(id);
+
+            CarritoComprasVM model = new CarritoComprasVM();
+            model.ProductoVista = (ProductoDTO)resultado;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DetailsProducto(CarritoComprasVM model)
+        {
+            if (HttpContext.Session.GetInt32("CantdiadProductos") != null)
+            {
+                if (HttpContext.Session.GetInt32("CantidadProductos") >= 0)
+                {
+                    int? contadorProductos = HttpContext.Session.GetInt32("CantidadProductos");
+                    HttpContext.Session.SetInt32("CantidadProductos", Convert.ToInt32(contadorProductos + 1));
+                    HttpContext.Session.SetInt32("Producto" + Convert.ToInt32(contadorProductos + 1), model.ProductoVista.IdEntidad);
+                    HttpContext.Session.SetInt32("CantidadProducto" + Convert.ToInt32(contadorProductos + 1), model.CantidadxProducto);
+                    model.ProductoVista.Mensaje = "Producto agregado al carrito! Hay " + HttpContext.Session.GetInt32("CantidadProductos") +
+                                                  " productos en el carrito";
+                    return View(model);
+                }
+                else
+                {
+                    return Content("Sección de codigo inalcanzable");
+                }
+            }
+            else
+            {
+                HttpContext.Session.SetInt32("CantidadProductos", 1);
+                HttpContext.Session.SetInt32("Producto1", model.ProductoVista.IdEntidad);
+                HttpContext.Session.SetInt32("CantidadProducto1", model.CantidadxProducto);
+                model.ProductoVista.Mensaje = "Producto agregado al carrito! Hay " + HttpContext.Session.GetInt32("CantidadProductos") +
+                                              " productos en el carrito";
+                return View(model);
+            }
+        }
+
+        public ActionResult ContenidoCarritoCompras()
+        {
+            CarritoComprasVM model = new CarritoComprasVM();
+            var cantidad = HttpContext.Session.GetInt32("CantidadProductos");
+
+            if (cantidad > 0)
+            {
+                ViewBag.CantidadProductosCarrito = HttpContext.Session.GetInt32("CantidadProductos");
+
+
+                model.ListProductosCarrito = new List<ProductoDTO>();
+                for (int i = 1; i <= cantidad; i++)
+                {
+                    var datoProducto = new ProductoLogica().ObtenerProductoPorCodigo(Convert.ToInt32(HttpContext.Session.GetInt32("Producto" + i)));
+                    model.ListProductosCarrito.Add((ProductoDTO)datoProducto);
+                    // model.CantidadPorProducto.Add(Convert.ToInt32(HttpContext.Session.GetInt32("CantidadProducto" + i)));
+
+                }
+
+                ViewBag.MontoTotal = model.ListProductosCarrito.Sum(P => P.PrecioUnitario);
+            }
+            else
+            {
+                ViewBag.Vacio = "No hay productos que mostrar en el carrito";
+            }
+
+            return View();
+        }
+
+        public ActionResult EliminarProducto(int id)
+        {
+            HttpContext.Session.Remove("Producto" + id);
+            HttpContext.Session.Remove("CantidadProducto" + id);
+            int? contadorProductos = HttpContext.Session.GetInt32("CantidadProductos");
+            HttpContext.Session.SetInt32("CantidadProductos", 1);
+            return RedirectToAction("ContenidoCarritoCompras");
         }
 
 

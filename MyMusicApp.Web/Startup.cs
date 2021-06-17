@@ -23,6 +23,10 @@ namespace MyMusicApp.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession();
+            // Lo anterior se puede configurar por la que sigue:
+            // services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30)
+            // );    // con esto ya se puede usar las sesiones luego de aaplicar el nugget
             services.AddControllersWithViews();
         }
 
@@ -43,6 +47,8 @@ namespace MyMusicApp.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();    // añadir servicio de session 
 
             app.UseAuthorization();
 

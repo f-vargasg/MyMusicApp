@@ -10,6 +10,9 @@
     if (Model.Error == null)
     {
         ViewData["Title"] = "Información Producto";
+        // <div> El usuario conectado es @Model.Sucursal.Mensaje </div>
+        <div>  @ViewBag.Usuario </div>
+        <div>  @ViewBag.TiempoConexion </div>
         <h1>
             Esta es la sucursal  @Html.DisplayFor(model => model.Sucursal.DirSucursal) (@Html.DisplayFor(model => model.Sucursal.HorarioSucursal))
         </h1>
