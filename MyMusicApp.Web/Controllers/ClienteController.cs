@@ -8,6 +8,9 @@ using MyMusicApp.Web.ViewModel;
 using MyMusicApp.Web.Helpers;
 using MyMusicApp.Logica;
 using MyMusicApp.DTO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace MyMusicApp.Web.Controllers
 {
@@ -218,20 +221,38 @@ namespace MyMusicApp.Web.Controllers
 
         public ActionResult ListarProductos()
         {
-            var resultado = new ProductoLogica().ListarProductos();
+            
             SucursalProductoVM model = new SucursalProductoVM();
-            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+
+            // var resultado = new ProductoLogica().ListarProductos();
+            var url = "https://localhost:44310/api/MyMusicAppServices";
+
+            var webrequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+
+            string datos = "";
+            using(var response = webrequest.GetResponse())
             {
-                // mensaje de erorr
-                model.Error = (ErrorDTO)resultado.ElementAt(0);
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    var resultadoLectura = reader.ReadToEnd();
+                    datos = resultadoLectura.ToString();
+                }
             }
-            else
-            {
+
+            var resultado = JsonConvert.DeserializeObject<List<ProductoDTO>>(datos);
+
+           // if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+           // {
+                // mensaje de erorr
+           //     model.Error = (ErrorDTO)resultado.ElementAt(0);
+           // }
+           // else
+           // {
                 model.ListadoProductos = new List<ProductoDTO>();
                 foreach (var item in resultado)
                 {
                     model.ListadoProductos.Add((ProductoDTO)item);
-                }
+            //    }
                 // datos correctos
             }
             return View(model);

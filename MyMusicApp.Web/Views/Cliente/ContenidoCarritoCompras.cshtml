@@ -12,52 +12,59 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ContenidoCarritoCompras">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ProductoVista.IdEntidad)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ProductoVista.NombreProducto)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ProductoVista.PrecioUnitario)
-                        </th>
-                        <th>
-                            Cantidad solicitada
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.ListProductosCarrito.Count(); i++)
-                    {
+            @if (ViewBag.Vacio != null)
+            {
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).IdEntidad)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).NombreProducto)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).PrecioUnitario)
-                            </td>
-                            <td>
-                                @Model.ListaCantidadPorProducto.ElementAt(i))
-                            </td>
-                            <td>
-                                @Html.
-                                @* <input type="submit" asp-route-id="@i" value="Eliminar del Carrito" class="btn btn-primary" />*@
-                            </td>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProductoVista.IdEntidad)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProductoVista.NombreProducto)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProductoVista.PrecioUnitario)
+                            </th>
+                            <th>
+                                Cantidad solicitada
+                            </th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-            <div>
-                <b> El monto total del carrito es de:</b> @ViewBag.MontoTotal
-            </div>
-                
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.ListProductosCarrito.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).IdEntidad)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).NombreProducto)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).PrecioUnitario)
+                                </td>
+                                <td>
+                                    @Model.ListaCantidadPorProducto.ElementAt(i))
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Eliminar producto del carrito", "EliminarProducto", new { id = (i + 1) })
+                                    @* <input type="submit" asp-route-id="@i" value="Eliminar del Carrito" class="btn btn-primary" />*@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div>
+                    <b> El monto total del carrito es de:</b> @ViewBag.MontoTotal
+                </div>
+            }
+            else
+            {
+                @ViewBag.Vacio
+            }
+
         </form>
     </div>
 </div>
