@@ -221,41 +221,25 @@ namespace MyMusicApp.Web.Controllers
 
         public ActionResult ListarProductos()
         {
-            
             SucursalProductoVM model = new SucursalProductoVM();
+            var resultado = new ProductoLogica().ListarProductos();
 
-            // var resultado = new ProductoLogica().ListarProductos();
-            var url = "https://localhost:44310/api/MyMusicAppServices";
-
-            var webrequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
-
-            string datos = "";
-            using(var response = webrequest.GetResponse())
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
             {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    var resultadoLectura = reader.ReadToEnd();
-                    datos = resultadoLectura.ToString();
-                }
-            }
-
-            var resultado = JsonConvert.DeserializeObject<List<ProductoDTO>>(datos);
-
-           // if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
-           // {
                 // mensaje de erorr
-           //     model.Error = (ErrorDTO)resultado.ElementAt(0);
-           // }
-           // else
-           // {
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
                 model.ListadoProductos = new List<ProductoDTO>();
                 foreach (var item in resultado)
                 {
                     model.ListadoProductos.Add((ProductoDTO)item);
-            //    }
+                }
                 // datos correctos
             }
             return View(model);
+
         }
 
         public ActionResult DetailsProducto(int id)
@@ -272,7 +256,7 @@ namespace MyMusicApp.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DetailsProducto(CarritoComprasVM model)
         {
-            if (HttpContext.Session.GetInt32("CantdiadProductos") != null)
+            if (HttpContext.Session.GetInt32("CantidadProductos") != null)
             {
                 if (HttpContext.Session.GetInt32("CantidadProductos") >= 0)
                 {
@@ -307,26 +291,25 @@ namespace MyMusicApp.Web.Controllers
 
             if (cantidad > 0)
             {
-                ViewBag.CantidadProductosCarrito = HttpContext.Session.GetInt32("CantidadProductos");
+                ViewBag.CantidadProductosCarrito = cantidad;
 
-
-                model.ListProductosCarrito = new List<ProductoDTO>();
+                model.ListaProductosCarrito = new List<ProductoDTO>();
+                model.ListaCantidadPorProducto = new List<int>();
                 for (int i = 1; i <= cantidad; i++)
                 {
                     var datoProducto = new ProductoLogica().ObtenerProductoPorCodigo(Convert.ToInt32(HttpContext.Session.GetInt32("Producto" + i)));
-                    model.ListProductosCarrito.Add((ProductoDTO)datoProducto);
-                    // model.CantidadPorProducto.Add(Convert.ToInt32(HttpContext.Session.GetInt32("CantidadProducto" + i)));
-
+                    model.ListaProductosCarrito.Add((ProductoDTO)datoProducto);
+                    model.ListaCantidadPorProducto.Add(Convert.ToInt32(HttpContext.Session.GetInt32("CantidadProducto" + i)));
                 }
 
-                ViewBag.MontoTotal = model.ListProductosCarrito.Sum(P => P.PrecioUnitario);
+                ViewBag.MontoTotal = model.ListaProductosCarrito.Sum(P => P.PrecioUnitario);
             }
             else
             {
                 ViewBag.Vacio = "No hay productos que mostrar en el carrito";
             }
 
-            return View();
+            return View(model);
         }
 
         public ActionResult EliminarProducto(int id)
@@ -334,7 +317,8 @@ namespace MyMusicApp.Web.Controllers
             HttpContext.Session.Remove("Producto" + id);
             HttpContext.Session.Remove("CantidadProducto" + id);
             int? contadorProductos = HttpContext.Session.GetInt32("CantidadProductos");
-            HttpContext.Session.SetInt32("CantidadProductos", 1);
+            HttpContext.Session.SetInt32("CantidadProductos", Convert.ToInt32(contadorProductos - 1));
+
             return RedirectToAction("ContenidoCarritoCompras");
         }
 

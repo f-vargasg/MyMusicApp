@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="ContenidoCarritoCompras">
-            @if (ViewBag.Vacio != null)
+            @if (Model.ListaProductosCarrito != null)
             {
                 <table class="table">
                     <thead>
@@ -33,17 +33,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 0; i < Model.ListProductosCarrito.Count(); i++)
+                        @for (int i = 0; i < Model.ListaProductosCarrito.Count(); i++)
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).IdEntidad)
+                                    @Html.DisplayFor(modelItem => modelItem.ListaProductosCarrito.ElementAt(i).IdEntidad)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).NombreProducto)
+                                    @Html.DisplayFor(modelItem => modelItem.ListaProductosCarrito.ElementAt(i).NombreProducto)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => modelItem.ListProductosCarrito.ElementAt(i).PrecioUnitario)
+                                    @Html.DisplayFor(modelItem => modelItem.ListaProductosCarrito.ElementAt(i).PrecioUnitario)
                                 </td>
                                 <td>
                                     @Model.ListaCantidadPorProducto.ElementAt(i))

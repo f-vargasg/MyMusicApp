@@ -18,7 +18,7 @@
     <div class="col-md-4">
         <form asp-action="DetailsProducto">
             <div>
-                <b>@Html.LabelFor(model => model.ProductoVista.IdEntidad)</b>
+                Identificador: <b>@Model.ProductoVista.IdEntidad</b>
                 @Html.HiddenFor(model => model.ProductoVista.IdEntidad)
             </div>
             <br />
@@ -44,9 +44,13 @@
         </form>
     </div>
 </div>
+@if (Model.ProductoVista.Mensaje != null)
+{
+    <div><b>@Model.ProductoVista.Mensaje</b></div>
+}
 
 <div>
-    <a asp-action="ContenidoCarritoCompras">Back to List</a>
+    <a asp-action="ContenidoCarritoCompras">Ver carrito de compras</a>
 </div>
 
 @section Scripts {
