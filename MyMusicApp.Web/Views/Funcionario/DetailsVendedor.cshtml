@@ -1,0 +1,79 @@
+﻿@model MyMusicApp.Web.ViewModel.VendedorVM
+
+@{
+    ViewData["Title"] = "DetailsVendedor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Error == null)
+{
+    <h1>DetailsVendedor</h1>
+    <h2>  @ViewBag.PuestoVendedor</h2>
+    <div>
+        <h4>VendedorDTO</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.NombreVendedor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.NombreVendedor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.Puesto)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.Puesto)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.UsuarioVendedor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.UsuarioVendedor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.ClaveVendedor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.ClaveVendedor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.CedulaVendedor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.CedulaVendedor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.IdEntidad)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.IdEntidad)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Vendedor.Mensaje)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Vendedor.Mensaje)
+            </dd>
+        </dl>
+    </div>
+
+    <div>
+        <form asp-action="SetPuestoVendedor">
+            @Html.HiddenFor(model => model.Vendedor.IdEntidad)
+            <div class="form-group">
+                <input type="submit" value="Seleccionar Puesto Vendedor" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+    <div>
+        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
+    <h4>Ha ocurrido un error</h4>
+    <div>@Html.DisplayFor(model => model.Error.MensajeError)</div>
+}

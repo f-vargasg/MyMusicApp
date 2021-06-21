@@ -42,12 +42,12 @@ namespace MyMusicApp.Logica
         {
             return new Vendedor
             {
-                NomVendedor = vendedorDTO.NombreVendedor,
                 CodCedula = vendedorDTO.CedulaVendedor,
                 DesPuesto = vendedorDTO.Puesto,
+                FkSucursal = (vendedorDTO.SucursalAsociada != null ? vendedorDTO.SucursalAsociada.IdEntidad : 1),
+                NomVendedor = vendedorDTO.NombreVendedor,
                 UsrVendedor = vendedorDTO.UsuarioVendedor,
-                UsrPassword = vendedorDTO.ClaveVendedor,
-                FkSucursal = vendedorDTO.SucursalAsociada.IdEntidad
+                UsrPassword = vendedorDTO.ClaveVendedor
             };
         }
 
@@ -63,11 +63,15 @@ namespace MyMusicApp.Logica
 
                 var vendedorDato = ConvertirDTOVendedorADatos(vendedor);
 
-                var resultado = intermedia.AgregarVendedor(vendedorDato);
+                var resultado = intermedia.RegistrarVendedorAsignadoSucursal(vendedorDato);
 
                 if (resultado.CodigoRespuesta != -1)
                 {
-                    return new BaseDTO { Mensaje = resultado.Mensaje + ". Se registraron los datos." };
+                    return new BaseDTO
+                    {
+                        IdEntidad = Convert.ToInt32(resultado.ContenidoRespuesta),
+                        Mensaje = resultado.Mensaje + ". Se registraron los datos."
+                    };
                 }
                 else
                 {

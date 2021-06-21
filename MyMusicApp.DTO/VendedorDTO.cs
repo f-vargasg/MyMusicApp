@@ -21,7 +21,6 @@ namespace MyMusicApp.DTO
         public string NombreVendedor { get; set; }
 
         [Required(ErrorMessage = "No se puede guardar un producto sino coloca su puesto")]
-        [RegularExpression(@"^[A-z][a-z]*$")]
         [MaxLength(100, ErrorMessage = "El campo de puesto del Vendedor no puede ser mayor a 100 caracteres")]
         [Display(Name = "Nom.Puesto del Vendedor")]
         public string Puesto { get; set; }

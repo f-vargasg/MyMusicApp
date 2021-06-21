@@ -273,6 +273,48 @@ namespace MyMusicApp.Datos
             }
         }
 
+        // Laboratorio #1 - 4.a. Registro del vendedor por primera vez, asignándolo a una sucursal (insert)
+        public RespuestaDTO RegistrarVendedorAsignadoSucursal(Vendedor vendedor)
+        {
+            try
+            {
+                contexto.Vendedors.Add(vendedor);
+
+                if (contexto.SaveChanges() > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = vendedor.PkVendedor,
+                        Mensaje = "Datos guardados con exito"
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontró el vendedor especificado");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
         #endregion
     }
 }
