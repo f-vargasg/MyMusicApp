@@ -17,9 +17,32 @@
         @Html.DisplayFor(modelItem => Model.CorreoElectronico)
     </td>
     <td>
-        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        <div class="btn-group btn-group-toggle">
+            @Html.ActionLink("Editar", "Edit", new { }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Detalles", "Details", new { }, new { @class = "btn btn-info" })
+           @* @Html.ActionLink("Eliminar", "Delete", new { }, new { @class = "btn btn-danger" }) *@
+            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modalEliminar">Eliminar</button>
+        </div>
+        
     </td>
 </tr>
+
+<div class="modal fade" id="modalEliminar" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">>Eliminar Sucursal</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">X</button>
+            </div>
+            <div class="modal-body">
+                ¿Esta seguro que desea eliminar esta sucursal?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success">Sí</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">No</button>
+
+            </div>
+        </div>
+    </div>
+</div>
 

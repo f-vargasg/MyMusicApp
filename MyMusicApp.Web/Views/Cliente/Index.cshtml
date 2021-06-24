@@ -11,36 +11,30 @@
     {
         ViewData["Title"] = "Información Producto";
         // <div> El usuario conectado es @Model.Sucursal.Mensaje </div>
-        <div>  @ViewBag.Usuario </div>
-        <div>  @ViewBag.TiempoConexion </div>
-        <h1>
-            Esta es la sucursal  @Html.DisplayFor(model => model.Sucursal.DirSucursal) (@Html.DisplayFor(model => model.Sucursal.HorarioSucursal))
-        </h1>
-
-        <h2>
-            Información del producto @Html.DisplayFor(model => model.Producto)
-        </h2>
-        <br />
-        <!--
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.CantidadInventario)</b> @Html.DisplayFor(model => model.Producto.CantidadInventario)
+        <div class="alert alert-success" >  @ViewBag.Usuario </div>
+        <div class="alert alert-info">  @ViewBag.TiempoConexion </div>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container" style="background-color:lightgreen">
+                <h4 class="display-4">
+                    @Html.DisplayFor(model => model.Sucursal.DirSucursal)
+                </h4>
+                <div>El horario de la sucursal es:  @Html.DisplayFor(model => model.Sucursal.HorarioSucursal)</div> 
+            </div>
+            
         </div>
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.PrecioUnitario)</b> @Html.DisplayFor(model => model.Producto.PrecioUnitario)
+        <div class="card">
+            <div class="card-header">
+                @Html.DisplayFor(model => model.Producto.NombreProducto)
+            </div>
+            <div class="card-body">
+                <div class="card-text"><b>@Html.LabelFor(model => model.Producto.CantidadInventario)</b> @Html.DisplayFor(model => model.Producto.CantidadInventario) </div>
+                <div class="card-text"> <b>@Html.LabelFor(model => model.Producto.TipoProducto)</b> @Html.DisplayFor(model => model.Producto.TipoProducto) </div>
+            </div>
+            <div class="card-footer alert-dark">
+                <b>@Html.LabelFor(model => model.Producto.PrecioUnitario)</b> @Html.DisplayFor(model => model.Producto.PrecioUnitario)
+            </div>
         </div>
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.TipoProducto)</b> @Html.DisplayFor(model => model.Producto.TipoProducto)
-        </div>
-        -->
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.CantidadInventario)</b> @Html.TextBoxFor(model => model.Producto.CantidadInventario)
-        </div>
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.PrecioUnitario)</b> @Html.TextBoxFor(model => model.Producto.PrecioUnitario)
-        </div>
-        <div>
-            <b>@Html.LabelFor(model => model.Producto.TipoProducto)</b> @Html.TextBoxFor(model => model.Producto.NombreProducto)
-        </div>
+        
     }
     else
     {

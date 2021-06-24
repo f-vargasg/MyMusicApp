@@ -1,0 +1,16 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model MyMusicApp.DTO.ErrorDTO
+
+<div>
+    <h4 class="alert alert-danger">Ha ocurrido un errror...</h4>
+    <dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.MensajeError)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MensajeError)
+        </dd>
+    </dl>
+</div>
