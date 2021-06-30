@@ -249,6 +249,10 @@ namespace MyMusicApp.Web.Controllers
             CarritoComprasVM model = new CarritoComprasVM();
             model.ProductoVista = (ProductoDTO)resultado;
 
+            // Esto para pruebas se ocupa bajar a la BL
+            // HttpContext.Session.SetString("ProdRelacionado", "Producto Prueba Relacionado");
+            ViewBag.ProdRelacionado = "Producto Prueba Relacionado";
+
             return View(model);
         }
 

@@ -15,27 +15,59 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DirSucursal" class="control-label"></label>
-                <input asp-for="DirSucursal" class="form-control" />
+                <input asp-for="DirSucursal" class="form-control form-control-lg" />
                 <span asp-validation-for="DirSucursal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="HorarioSucursal" class="control-label"></label>
-                <input asp-for="HorarioSucursal" class="form-control" />
+                <textarea asp-for="HorarioSucursal" class="form-control" rows="5">Texto de ejemplo</textarea>
                 <span asp-validation-for="HorarioSucursal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TelefonoSucursal" class="control-label"></label>
-                <input asp-for="TelefonoSucursal" class="form-control" />
+                <div class="input-group">
+                    <span class="input-group-text" id="area">(506)</span>
+                    <input type="tel" asp-for="TelefonoSucursal" class="form-control" placeholder="####-####"
+                           aria-describedby="area"/>
+                </div>
+                
                 <span asp-validation-for="TelefonoSucursal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CorreoElectronico" class="control-label"></label>
-                <input asp-for="CorreoElectronico" class="form-control" />
+                <div class="input-group">
+                    <input type="text" asp-for="CorreoElectronico" class="form-control" aria-describedby="correo" />
+                    <span class="input-group-text" id="correo">at cenfomusic.com</span>
+                </div>
+                
                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="chkPrincipal" />
+                    <label class="form-check-label" for="chkPrincipal">Este es mi checkbox</label>
+                </div>
+                
+            </div>
+            <div class="form-group">
+                <div class="form-check-inline">
+                    <input type="radio" class="form-check-input" name="sino" id="idsi" value="1" />
+                    <label class="form-check-label" for="idsi">Sí</label>
+                </div>
+                <div class="form-check-inline">
+                    <input type="radio" class="form-check-input" name="sino" id="idno" value="2" />
+                    <label class="form-check-label" for="idsi">No</label>
+                </div>
+                <div class="form-check-inline">
+                    <input type="radio" class="form-check-input" name="sino" id="idnose" value="3" />
+                    <label class="form-check-label" for="idsi">No sé</label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
+
         </form>
     </div>
 </div>
