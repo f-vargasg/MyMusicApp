@@ -28,5 +28,8 @@ namespace MyMusicApp.DTO
         [Display(Name = "Estado Solicitud")]
         public int EstadoSolicEnvio { get; set; }
 
+        [Display(Name = "Porcentaje Comision")]
+        public decimal MtoPctComision { get; set; }
+
     }
 }

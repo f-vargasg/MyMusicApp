@@ -35,6 +35,7 @@ namespace MyMusicApp.Logica
                 MontoTotal = ordenCompra.MntTotalOrden,
                 TipoEntrega = ordenCompra.TipEntrega,
                 EstadoSolicitud = ordenCompra.IndEstado,
+                PctDescuento = ordenCompra.MtoPctDescuento
             };
         }
 
@@ -46,7 +47,8 @@ namespace MyMusicApp.Logica
                 PkOrdenCompra = solicitudCompraDTO.IdEntidad,
                 IndEstado = solicitudCompraDTO.EstadoSolicitud,
                 MntTotalOrden = solicitudCompraDTO.MontoTotal,
-                TipEntrega = solicitudCompraDTO.TipoEntrega
+                TipEntrega = solicitudCompraDTO.TipoEntrega,
+                MtoPctDescuento = solicitudCompraDTO.PctDescuento
             };
         }
 

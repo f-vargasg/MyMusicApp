@@ -95,6 +95,8 @@ namespace MyMusicApp.Datos.MyMusicModel
 
                 entity.Property(e => e.MntTotalOrden).HasColumnType("numeric(18, 2)");
 
+                entity.Property(e => e.MtoPctDescuento).HasColumnType("numeric(18, 2)");
+
                 entity.HasOne(d => d.FkClienteNavigation)
                     .WithMany(p => p.OrdenCompras)
                     .HasForeignKey(d => d.FkCliente)
@@ -115,6 +117,8 @@ namespace MyMusicApp.Datos.MyMusicModel
 
                 entity.ToTable("Producto");
 
+                entity.Property(e => e.IndSegunda).HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.MtoPrecioUnitario).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.NomProducto).HasMaxLength(100);
@@ -122,7 +126,6 @@ namespace MyMusicApp.Datos.MyMusicModel
                 entity.HasOne(d => d.FkSucursalNavigation)
                     .WithMany(p => p.Productos)
                     .HasForeignKey(d => d.FkSucursal)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Producto_Sucursal_FK");
             });
 
@@ -140,6 +143,8 @@ namespace MyMusicApp.Datos.MyMusicModel
                 entity.Property(e => e.FecEnvio).HasColumnType("date");
 
                 entity.Property(e => e.FecRecibo).HasColumnType("date");
+
+                entity.Property(e => e.MtoPctComision).HasColumnType("numeric(18, 2)");
 
                 entity.HasOne(d => d.FkOrdenCompraNavigation)
                     .WithMany(p => p.SolicitudEnvioDomics)

@@ -125,5 +125,19 @@ namespace MyMusicApp.Servicios.Controllers
         public void Delete(int id)
         {
         }
+
+        //Método para obtener los productos “de segunda”
+        [HttpGet("GetProductosSegunda")]
+        public IEnumerable<BaseDTO> GetProductosSegunda()
+        {
+            return new ProductoLogica().ListarProductosDeSegunda().OfType<ProductoDTO>();
+        }
+
+        //Método para obtener los productos “de segunda” relacionados a los productos nuevos
+        [HttpGet("GetProdSegundaRelProdNuevo")]
+        public BaseDTO GetProdSegundaRelProdNuevo(string nomProducto)
+        {
+            return new ProductoLogica().ListarProductoDeSegundaParecidosA(nomProducto);
+        }
     }
 }

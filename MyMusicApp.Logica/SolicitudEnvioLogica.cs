@@ -33,7 +33,8 @@ namespace MyMusicApp.Logica
                 FecEnvio = solicitudEnvio.FecEnvio,
                 FechaRecibido = solicitudEnvio.FecRecibo,
                 UbicacionEnvio = solicitudEnvio.DesUbicEnvio,
-                IdEntidad = solicitudEnvio.PkSolicitudEnvio
+                IdEntidad = solicitudEnvio.PkSolicitudEnvio,
+                MtoPctComision = solicitudEnvio.MtoPctComision ?? 0 
             };
         }
 
@@ -45,6 +46,7 @@ namespace MyMusicApp.Logica
                 FecEnvio = solicitudEnvioDTO.FecEnvio,
                 FecRecibo = solicitudEnvioDTO.FechaRecibido,
                 IndEstado = solicitudEnvioDTO.EstadoSolicEnvio,
+                MtoPctComision = solicitudEnvioDTO.MtoPctComision
             };
         }
         #endregion

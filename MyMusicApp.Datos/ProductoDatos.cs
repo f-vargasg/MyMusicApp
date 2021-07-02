@@ -68,6 +68,91 @@ namespace MyMusicApp.Datos
             }
         }
 
+        /// <summary>
+        /// Listar los productos de Segunda  (Pregunta 2b)
+        /// </summary>
+        /// <returns></returns>
+
+        public RespuestaDTO ListarProductosDeSegunda()
+        {
+            try
+            {
+                var producto = contexto.Productos.Where(P => P.IndSegunda == 1).ToList();
+
+                if (producto != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = producto
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontraron productos de Segunda [ListarProductosDeSegunda]");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
+        public RespuestaDTO ObtenerProductoDeSegundaParecidosA(string nomProducto)
+        {
+            try
+            {
+                var producto = contexto.Productos.FirstOrDefault(P => P.NomProducto.Contains(nomProducto) &&
+                                                                 P.IndSegunda == 1);
+
+                if (producto != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = producto
+                    };
+                }
+                else
+                {
+                    throw new Exception("No existen productos de segunda relacionados");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
 
         // Laboratorio #1 - 5.a. Búsqueda de productos según su Primary Key
         public RespuestaDTO ObtenerProductoPorCodigo(int codigo)

@@ -23,17 +23,19 @@ namespace MyMusicApp.Logica
         #endregion
 
         #region Metodos
+        
         #region Conversiones
         internal static ProductoDTO ConvertirDatosProductoADTO(Producto producto)
         {
             return new ProductoDTO
             {
-                SucursalAsociada = (producto.FkSucursalNavigation != null ?  SucursalLogica.ConvertirDatosSucursalADTO(producto.FkSucursalNavigation) : null),
+                SucursalAsociada = (producto.FkSucursalNavigation != null ? SucursalLogica.ConvertirDatosSucursalADTO(producto.FkSucursalNavigation) : null),
                 CantidadInventario = Convert.ToInt32(producto.CntProducto),
                 IdEntidad = producto.PkProducto,
                 NombreProducto = producto.NomProducto,
                 PrecioUnitario = Convert.ToDecimal(producto.MtoPrecioUnitario),
-                TipoProducto = Convert.ToInt32(producto.TipProducto)
+                TipoProducto = Convert.ToInt32(producto.TipProducto),
+                IndSegunda = Convert.ToInt32(producto.IndSegunda)
             };
         }
 
@@ -44,7 +46,8 @@ namespace MyMusicApp.Logica
                 CntProducto = item.CantidadInventario,
                 TipProducto = item.TipoProducto,
                 MtoPrecioUnitario = item.PrecioUnitario,
-                NomProducto = item.NombreProducto
+                NomProducto = item.NombreProducto,
+                IndSegunda = item.IndSegunda
             };
         }
 
@@ -85,6 +88,64 @@ namespace MyMusicApp.Logica
             }
         }
 
+        public List<BaseDTO> ListarProductosDeSegunda()
+        {
+            List<BaseDTO> respuesta = new List<BaseDTO>();
+
+            try
+            {
+                // ClaseEjemploDatos intermedioDatos = new ClaseEjemploDatos(this.contexto);
+
+                ProductoDatos intermedioDatos = new ProductoDatos(this.contexto);
+
+                var respuestaDatos = intermedioDatos.ListarProductosDeSegunda();
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var lista = ((List<Producto>)respuestaDatos.ContenidoRespuesta);
+                    for (int i = 0; i < lista.Count; i++)
+                    {
+                        respuesta.Add(ConvertirDatosProductoADTO(lista[i]));
+                    }
+                    return respuesta;
+                }
+                else
+                {
+                    respuesta.Clear();
+                    respuesta.Add((ErrorDTO)respuestaDatos.ContenidoRespuesta);
+                    return respuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                respuesta.Clear();
+                respuesta.Add(new ErrorDTO { MensajeError = error.Message });
+                return respuesta;
+            }
+        }
+
+        public BaseDTO ListarProductoDeSegundaParecidosA(string nomProducto)
+        {
+            try
+            {
+                ProductoDatos intermedioProducto = new ProductoDatos();
+
+                var respuestaDatos = intermedioProducto.ObtenerProductoDeSegundaParecidosA(nomProducto);
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var solicitudCompraDTO = ConvertirDatosProductoADTO((Producto)respuestaDatos.ContenidoRespuesta);
+
+                    return solicitudCompraDTO;
+                }
+                else
+                {
+                    return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
         public BaseDTO ObtenerProductoPorCodigo(int codigo)
         {
             try
@@ -108,6 +169,7 @@ namespace MyMusicApp.Logica
                 return new ErrorDTO { MensajeError = error.Message };
             }
         }
+
 
 
         public List<BaseDTO> FiltrarProductosPorParametros(string nombreProducto, int tipoProducto,

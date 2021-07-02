@@ -22,6 +22,8 @@ namespace MyMusicApp.DTO
         [Display(Name = "Monto Total")]
         public decimal MontoTotal { get; set; }
 
+        public decimal PctDescuento { get; set; }
+
         public VendedorDTO VendedorAsociado { get; set; }
 
         public ClienteDTO ClienteAsociado { get; set; }

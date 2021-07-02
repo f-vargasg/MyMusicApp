@@ -20,6 +20,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public int FkVendedor { get; set; }
         public int FkCliente { get; set; }
         public int IndEstado { get; set; }
+        public decimal MtoPctDescuento { get; set; }
 
         public virtual Cliente FkClienteNavigation { get; set; }
         public virtual Vendedor FkVendedorNavigation { get; set; }

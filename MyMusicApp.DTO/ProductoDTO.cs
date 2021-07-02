@@ -25,6 +25,9 @@ namespace MyMusicApp.DTO
         [Range(1000, 1000000, ErrorMessage ="Se sobrepasó el precio máximo")]
         public decimal PrecioUnitario { get; set; }
 
+        [Display(Name = "Indicador de Segunda:")]
+        public int IndSegunda { get; set; }
+
         // dd/mm/aaaa hh:mm:ss
         [DisplayFormat(DataFormatString ="{0:yyyy - MM-dd}")]
         public DateTime FechaRegistro { get; set; }
