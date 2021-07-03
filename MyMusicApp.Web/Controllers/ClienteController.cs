@@ -34,7 +34,7 @@ namespace MyMusicApp.Web.Controllers
                     DirSucursal = "Heredia",
                     HorarioSucursal = "08-17",
                     Mensaje = HttpContext.Session.GetString("Usuario")
-            };
+                };
 
                 model.Producto = new DTO.ProductoDTO
                 {
@@ -56,7 +56,7 @@ namespace MyMusicApp.Web.Controllers
                                    resultadoAleatorio + "."
                 };
             }
-            
+
 
             return View(model);
         }
@@ -94,7 +94,7 @@ namespace MyMusicApp.Web.Controllers
 
             var resultado = new SucursalLogica().ObtenerSucursalPorCodigo(id);
 
-            if (resultado.GetType() == typeof (ErrorDTO))
+            if (resultado.GetType() == typeof(ErrorDTO))
             {
                 model.Error = (ErrorDTO)resultado;
             }
@@ -118,7 +118,7 @@ namespace MyMusicApp.Web.Controllers
         {
             try
             {
-                var resultado = new SucursalLogica().AgregarSucursal(model.DirSucursal, model.HorarioSucursal, model.TelefonoSucursal, 
+                var resultado = new SucursalLogica().AgregarSucursal(model.DirSucursal, model.HorarioSucursal, model.TelefonoSucursal,
                                             model.CorreoElectronico);  // TODO: Hacerlo con el parametro sucursaldDTO
                 if (resultado.GetType() == typeof(ErrorDTO))
                 {
@@ -129,7 +129,7 @@ namespace MyMusicApp.Web.Controllers
                     return RedirectToAction("Details", new { id = resultado.IdEntidad });
                     // return RedirectToAction(nameof(Index));
                 }
-                
+
             }
             catch
             {
@@ -152,7 +152,7 @@ namespace MyMusicApp.Web.Controllers
         {
             try
             {
-                var resultado = new ClienteLogica().AgregarCliente(model);   
+                var resultado = new ClienteLogica().AgregarCliente(model);
 
 
                 if (resultado.GetType() == typeof(ErrorDTO))
@@ -192,7 +192,7 @@ namespace MyMusicApp.Web.Controllers
 
 
         //GET: ClienteController/ListarSucursales
-        public ActionResult ListarSucursales ()
+        public ActionResult ListarSucursales()
         {
             SucursalProductoVM model = new SucursalProductoVM();
 
@@ -357,7 +357,7 @@ namespace MyMusicApp.Web.Controllers
         // POST: ClienteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
@@ -373,22 +373,31 @@ namespace MyMusicApp.Web.Controllers
         public ActionResult ListarProductosSegunda()
         {
             SucursalProductoVM model = new SucursalProductoVM();
-            var resultado = new ProductoLogica().ListarProductosDeSegunda();
+            // var resultado = new ProductoLogica().ListarProductosDeSegunda();
+            var url = "https://localhost:44310/api/MyMusicAppServices/GetProductosSegunda";
 
-            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            var webrequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+
+            string datos = "";
+            using (var response = webrequest.GetResponse())
             {
-                // mensaje de erorr
-                model.Error = (ErrorDTO)resultado.ElementAt(0);
-            }
-            else
-            {
-                model.ListadoProductos = new List<ProductoDTO>();
-                foreach (var item in resultado)
+                using (var reader = new StreamReader(response.GetResponseStream()))
                 {
-                    model.ListadoProductos.Add((ProductoDTO)item);
+                    var resultadoLectura = reader.ReadToEnd();
+                    datos = resultadoLectura.ToString();
                 }
-                // datos correctos
             }
+
+            var resultado = JsonConvert.DeserializeObject<List<ProductoDTO>>(datos);
+
+
+            model.ListadoProductos = new List<ProductoDTO>();
+            foreach (var item in resultado)
+            {
+                model.ListadoProductos.Add((ProductoDTO)item);
+            }
+            // datos correctos
+
             return View(model);
 
         }
