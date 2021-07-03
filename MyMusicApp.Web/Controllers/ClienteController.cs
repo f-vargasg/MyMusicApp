@@ -357,6 +357,7 @@ namespace MyMusicApp.Web.Controllers
         // POST: ClienteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
@@ -368,5 +369,29 @@ namespace MyMusicApp.Web.Controllers
                 return View();
             }
         }
+
+        public ActionResult ListarProductosSegunda()
+        {
+            SucursalProductoVM model = new SucursalProductoVM();
+            var resultado = new ProductoLogica().ListarProductosDeSegunda();
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                // mensaje de erorr
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoProductos = new List<ProductoDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoProductos.Add((ProductoDTO)item);
+                }
+                // datos correctos
+            }
+            return View(model);
+
+        }
+
     }
 }
