@@ -242,6 +242,30 @@ namespace MyMusicApp.Web.Controllers
 
         }
 
+        [Route("Productos")]
+        [ResponseCache(Location = ResponseCacheLocation.None)]
+        public ActionResult Productos()
+        {
+            SucursalProductoVM model = new SucursalProductoVM();
+            var resultado = new ProductoLogica().ListarProductos();
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                // mensaje de erorr
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoProductos = new List<ProductoDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoProductos.Add((ProductoDTO)item);
+                }
+                // datos correctos
+            }
+            return Json(model.ListadoProductos);
+
+        }
         public ActionResult DetailsProducto(int id)
         {
             var resultado = new ProductoLogica().ObtenerProductoPorCodigo(id);
@@ -400,6 +424,11 @@ namespace MyMusicApp.Web.Controllers
 
             return View(model);
 
+        }
+
+        public ActionResult EjemploReact()
+        {
+            return View();
         }
 
     }

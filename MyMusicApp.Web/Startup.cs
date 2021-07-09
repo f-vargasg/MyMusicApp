@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Http;
+using JavaScriptEngineSwitcher.V8;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+using React.AspNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +31,10 @@ namespace MyMusicApp.Web
             // Lo anterior se puede configurar por la que sigue:
             // services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30)
             // );    // con esto ya se puede usar las sesiones luego de aaplicar el nugget
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // services.AddReact(config => { });
+            services.AddReact();   // Este config permite agregar cualquier libreria adicional relacionada a ReactJS
+            services.AddJsEngineSwitcher(options => options.DefaultEngineName = V8JsEngine.EngineName).AddV8();
             services.AddControllersWithViews();
         }
 
@@ -44,6 +52,9 @@ namespace MyMusicApp.Web
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
+            app.UseReact(config => { });
+
             app.UseStaticFiles();
 
             app.UseRouting();
