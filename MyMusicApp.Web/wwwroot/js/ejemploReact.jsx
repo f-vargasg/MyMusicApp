@@ -1,4 +1,4 @@
-﻿const { extend } = require("jquery");
+﻿// const { extend } = require("jquery");
 
 
 const data = [
@@ -6,12 +6,12 @@ const data = [
     { nombreProducto = "Bateria", precioProducto: 7800 },
 ]
 
-class Producto extend React.Component {
+class Producto extends React.Component {
     render() {
         return (
             <div className="producto">
-                <h2 className="nombreProducto"></h2>
-                <h3 className="precioProducto"></h3>
+                <h2 className="nombreProducto">{this.props.NombreProducto}</h2>
+                <h3 className="precioProducto">{this.props.PrecioProducto}</h3>
             </div>
         );
     }
@@ -19,30 +19,32 @@ class Producto extend React.Component {
 
 class ListaProductos extends React.Component {
     render() {
-        return (
-            const fuenteProds = this.props.data.map();
+        const fuenteProductos = data.map((d) =>
+            <Producto NombreProducto={d.nombreProducto} PrecioProducto={d.precioProducto}></Producto>
+        );
 
-            <div className = "ListaProductos" >
-                <Producto NombreProducto="Guitarra">
-                </Producto> >
+
+        return (
+            <div className="listaProductos">
+                { fuenteProductos}
             </div>
-            );
+        );
     }
 }
 
-class ContenerProducto extends React.Component {
+class ContenedorProducto extends React.Component {
     render() {
         return (
             <div className="contenedorProducto">
-                <h1 class="alert alert-info">Productos</h1>
-                <ListaProductos data= />
+                <h1>Contenedor de productos</h1>
+                <ListaProductos />
             </div>
         );
     }
 }
 
 
-ReactDOM.render(<ContenerProducto data={data} />, document.getElementById('content'));
+ReactDOM.render(<ContenedorProducto />, document.getElementById('content'))
 
 
 
