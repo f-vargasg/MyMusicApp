@@ -1,0 +1,83 @@
+﻿@model MyMusicApp.Web.ViewModel.SolicitudesCompraVM
+
+@{
+    ViewData["Title"] = "ListarSolicitudesCompra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista Solicitudes de Compra</h1>
+
+@if (Model.Error == null)
+{
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.FechaOrden)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.TipoEntrega)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.MontoTotal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.PctDescuento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.EstadoSolicitud)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SolicitudCompra.MtoPctDescuento)
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ListadoSolicitudesCompra)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FechaOrden)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TipoEntrega)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MontoTotal)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PctDescuento)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EstadoSolicitud)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MtoPctDescuento)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdEntidad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mensaje)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "DetailSolicitudCompra", new {  id=item.IdEntidad  }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h4>Ha ocurrido un error</h4>
+    <div>@Html.DisplayFor(model => model.Error.MensajeError)</div>
+}

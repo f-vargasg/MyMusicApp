@@ -16,11 +16,11 @@ namespace MyMusicApp.Datos
     public class VendedorDatos
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructor
-        public VendedorDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public VendedorDatos(MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }

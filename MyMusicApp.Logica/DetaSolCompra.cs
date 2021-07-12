@@ -11,7 +11,7 @@ namespace MyMusicApp.Logica
     public class DetaSolCompra
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructores
@@ -28,7 +28,7 @@ namespace MyMusicApp.Logica
             return new DetalleSolCompraDTO
             {
                 ProductoAsociado = ProductoLogica.ConvertirDatosProductoADTO(detalleCompra.FkProductoNavigation),
-                SolicitudCompraAsociada = SolicitudDeCompraLogica.ConvertirDatosOrdenCompraADTO(detalleCompra.FkOrdenCompraNavigation),
+                SolicitudCompraAsociada = SolicitudCompraLogica.ConvertirDatosOrdenCompraADTO(detalleCompra.FkOrdenCompraNavigation),
                 CantProducto = detalleCompra.CntArticulo,
                 IdEntidad = detalleCompra.PkDetalleOrden,
                 IndEstado = detalleCompra.IndEstado,

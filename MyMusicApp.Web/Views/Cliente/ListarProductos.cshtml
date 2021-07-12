@@ -27,20 +27,23 @@
         <tbody>
             @foreach (var item in Model.ListadoProductos)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IdEntidad)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NombreProducto)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PrecioUnitario)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Ver Detalles", "DetailsProducto", new { id = item.IdEntidad }) |
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdEntidad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreProducto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecioUnitario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IndSegunda)
+                </td>
+                <td>
+                    @Html.ActionLink("Ver Detalles", "DetailsProducto", new { id = item.IdEntidad }) |
+                </td>
+            </tr>
             }
         </tbody>
     </table>

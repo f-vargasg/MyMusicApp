@@ -11,11 +11,11 @@ namespace MyMusicApp.Datos
     public class SolicitudEnvioDatos
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructores
-        public SolicitudEnvioDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public SolicitudEnvioDatos(MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }
@@ -36,7 +36,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(P => P.PkSolicitudEnvio == codigo);
+                var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(P => P.PkSolicitudEnvio == codigo);
                 if (solicitudEnvio != null)
                 {
                     return solicitudEnvio;
@@ -53,6 +53,52 @@ namespace MyMusicApp.Datos
         }
 
         /// <summary>
+        /// 5.c. Listado total de solicitudes de envío.
+        /// </summary>
+        /// <returns></returns>
+        public RespuestaDTO ListarSolicitudesEnvio()
+        {
+            try
+            {
+                var solicitudesEnvio = contexto.SolicitudEnvios.ToList();
+
+                if (solicitudesEnvio.Count > 0)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudesEnvio
+                    };
+                }
+                else
+                {
+                    throw new Exception("No se encontraron solicitudes de envio ");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
+
+
+        /// <summary>
         /// 5.b. Listado de las solicitudes de envío según su Estado
         /// </summary>
         /// <param name="indEstado"></param>
@@ -61,7 +107,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudesEnvio = contexto.SolicitudEnvioDomics.Where(S => S.IndEstado == indEstado).ToList();
+                var solicitudesEnvio = contexto.SolicitudEnvios.Where(S => S.IndEstado == indEstado).ToList();
 
                 if (solicitudesEnvio.Count > 0)
                 {
@@ -105,7 +151,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudesEnvio = contexto.SolicitudEnvioDomics.ToList();
+                var solicitudesEnvio = contexto.SolicitudEnvios.ToList();
 
                 if (solicitudesEnvio.Count > 0)
                 {
@@ -148,11 +194,11 @@ namespace MyMusicApp.Datos
         /// <param name="datoParametro"></param>
         /// <param name="datosPrevios"></param>
         /// <returns></returns>
-        public object FiltrarSolicitudesEnvioPorParametros(string nombreParametro, object datoParametro, List<SolicitudEnvioDomic> datosPrevios)
+        public object FiltrarSolicitudesEnvioPorParametros(string nombreParametro, object datoParametro, List<SolicitudEnvio> datosPrevios)
         {
             try
             {
-                List<SolicitudEnvioDomic> respuesta = new List<SolicitudEnvioDomic>();
+                List<SolicitudEnvio> respuesta = new List<SolicitudEnvio>();
                 int valorInt = 0;
                 List<DateTime> valoresFecha = new List<DateTime>();
 
@@ -184,16 +230,16 @@ namespace MyMusicApp.Datos
                     switch (nombreParametro)
                     {
                         case "Estado":
-                            respuesta = contexto.SolicitudEnvioDomics.Where(S => S.IndEstado == valorInt).ToList();
+                            respuesta = contexto.SolicitudEnvios.Where(S => S.IndEstado == valorInt).ToList();
                             break;
                         case "RangoFecEnvio":
                             valoresFecha = (List<DateTime>)datoParametro;
-                            respuesta = contexto.SolicitudEnvioDomics.Where(S => S.FecEnvio >= valoresFecha.ElementAt(0)
+                            respuesta = contexto.SolicitudEnvios.Where(S => S.FecEnvio >= valoresFecha.ElementAt(0)
                                                                       && S.FecEnvio <= valoresFecha.ElementAt(1)).ToList();
                             break;
                         case "RangoFecRecibo":
                             valoresFecha = (List<DateTime>)datoParametro;
-                            respuesta = contexto.SolicitudEnvioDomics.Where(S => S.FecRecibo >= valoresFecha.ElementAt(0)
+                            respuesta = contexto.SolicitudEnvios.Where(S => S.FecRecibo >= valoresFecha.ElementAt(0)
                                                                       && S.FecRecibo <= valoresFecha.ElementAt(1)).ToList();
                             break;
                         default:
@@ -223,7 +269,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudEnvio = new SolicitudEnvioDomic
+                var solicitudEnvio = new SolicitudEnvio
                 {
                     DesUbicEnvio = desUbicacion,
                     FecEnvio = fecEnvio,
@@ -231,7 +277,7 @@ namespace MyMusicApp.Datos
                     FkOrdenCompra = idOrdenCompra,
                     IndEstado = indEstado
                 };
-                contexto.SolicitudEnvioDomics.Add(solicitudEnvio);
+                contexto.SolicitudEnvios.Add(solicitudEnvio);
 
                 var guardado = contexto.SaveChanges();
 
@@ -283,7 +329,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
+                var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
                 if (solicitudEnvio != null)
                 {
                     // Hacemos la actualizacion
@@ -342,7 +388,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
+                var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
                 if (solicitudEnvio != null)
                 {
                     // Hacemos la actualizacion
@@ -403,7 +449,7 @@ namespace MyMusicApp.Datos
         {
             try
             {
-                var solicitudEnvio = contexto.SolicitudEnvioDomics.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
+                var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(S => S.PkSolicitudEnvio == idSolEnvio);
                 if (solicitudEnvio != null)
                 {
                     // Hacemos la actualizacion

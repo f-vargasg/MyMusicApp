@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace MyMusicApp.Logica
 {
-    public class SolicitudDeCompraLogica
+    public class SolicitudCompraLogica
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructores
-        public SolicitudDeCompraLogica()
+        public SolicitudCompraLogica()
         {
 
         }
@@ -266,14 +266,14 @@ namespace MyMusicApp.Logica
 
 
         public BaseDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente, decimal mtoTotalOrden,
-                                                   int indEstado)
+                                                   int indEstado, decimal pctDescuento)
         {
             try
             {
                 var intermedia = new SolicitudCompraDatos (contexto);
 
                 var resultado = intermedia.AgregarSolicitudCompra(fecOrden, tipEntrega, idCliente, mtoTotalOrden, 
-                                                                  indEstado);
+                                                                  indEstado, pctDescuento);
 
                 if (resultado.CodigoRespuesta != -1)
                 {
@@ -298,14 +298,14 @@ namespace MyMusicApp.Logica
 
 
         public BaseDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente, decimal mtoTotalOrden,
-                                                   int idVendedor, int indEstado)
+                                                   int idVendedor, int indEstado, decimal pctDescuento)
         {
             try
             {
                 var intermedia = new SolicitudCompraDatos(contexto);
 
                 var resultado = intermedia.AgregarSolicitudCompra(fecOrden, tipEntrega, idCliente, mtoTotalOrden, 
-                                                                  idVendedor, indEstado); 
+                                                                  idVendedor, indEstado, pctDescuento); 
 
                 if (resultado.CodigoRespuesta != -1)
                 {

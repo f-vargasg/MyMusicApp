@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MyMusicApp.Datos.MyMusicModel
 {
-    public partial class DB_A4C98C_MusicStoreDBContext : DbContext
+    public partial class MusicStoreDBContext : DbContext
     {
-        public DB_A4C98C_MusicStoreDBContext()
+        public MusicStoreDBContext()
         {
         }
 
-        public DB_A4C98C_MusicStoreDBContext(DbContextOptions<DB_A4C98C_MusicStoreDBContext> options)
+        public MusicStoreDBContext(DbContextOptions<MusicStoreDBContext> options)
             : base(options)
         {
         }
@@ -21,7 +21,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public virtual DbSet<DetalleCompra> DetalleCompras { get; set; }
         public virtual DbSet<OrdenCompra> OrdenCompras { get; set; }
         public virtual DbSet<Producto> Productos { get; set; }
-        public virtual DbSet<SolicitudEnvioDomic> SolicitudEnvioDomics { get; set; }
+        public virtual DbSet<SolicitudEnvio> SolicitudEnvios { get; set; }
         public virtual DbSet<Sucursal> Sucursals { get; set; }
         public virtual DbSet<Vendedor> Vendedors { get; set; }
 
@@ -30,7 +30,7 @@ namespace MyMusicApp.Datos.MyMusicModel
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=SQL5103.site4now.net;Database=DB_A4C98C_MusicStoreDB;User Id=DB_A4C98C_MusicStoreDB_admin;Password=zxcv1234");
+                optionsBuilder.UseSqlServer("Server=WIN-3VU0IUD67IK\\SQLEXPRESS;Database=MusicStoreDB;User Id=sa;Password=Flpvrgs1966");
             }
         }
 
@@ -129,12 +129,12 @@ namespace MyMusicApp.Datos.MyMusicModel
                     .HasConstraintName("Producto_Sucursal_FK");
             });
 
-            modelBuilder.Entity<SolicitudEnvioDomic>(entity =>
+            modelBuilder.Entity<SolicitudEnvio>(entity =>
             {
                 entity.HasKey(e => e.PkSolicitudEnvio)
-                    .HasName("SolicitudEnvioDomic_PK");
+                    .HasName("SolicitudEnvio_PK");
 
-                entity.ToTable("SolicitudEnvioDomic");
+                entity.ToTable("SolicitudEnvio");
 
                 entity.Property(e => e.DesUbicEnvio)
                     .IsRequired()
@@ -147,10 +147,10 @@ namespace MyMusicApp.Datos.MyMusicModel
                 entity.Property(e => e.MtoPctComision).HasColumnType("numeric(18, 2)");
 
                 entity.HasOne(d => d.FkOrdenCompraNavigation)
-                    .WithMany(p => p.SolicitudEnvioDomics)
+                    .WithMany(p => p.SolicitudEnvios)
                     .HasForeignKey(d => d.FkOrdenCompra)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("SolicitudEnvioDomic_OrdenCompra_FK");
+                    .HasConstraintName("SolicitudEnvio_OrdenCompra_FK");
             });
 
             modelBuilder.Entity<Sucursal>(entity =>

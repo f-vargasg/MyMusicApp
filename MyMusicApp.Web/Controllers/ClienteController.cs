@@ -275,7 +275,13 @@ namespace MyMusicApp.Web.Controllers
 
             // Esto para pruebas se ocupa bajar a la BL
             // HttpContext.Session.SetString("ProdRelacionado", "Producto Prueba Relacionado");
-            ViewBag.ProdRelacionado = "Producto Prueba Relacionado";
+            var prodRelacionado = new ProductoLogica().ListarProductoDeSegundaParecidosA(model.ProductoVista.NombreProducto);
+            ViewBag.ProdRelacionado = "No Existe producto Relacionado";
+            if (prodRelacionado.GetType() != typeof(ErrorDTO))
+            {
+                ViewBag.ProdRelacionado = "El nombre del producto de segunda relacionado es: " + ((ProductoDTO)prodRelacionado).NombreProducto; ;
+            }
+            
 
             return View(model);
         }
@@ -397,7 +403,8 @@ namespace MyMusicApp.Web.Controllers
         public ActionResult ListarProductosSegunda()
         {
             SucursalProductoVM model = new SucursalProductoVM();
-            // var resultado = new ProductoLogica().ListarProductosDeSegunda();
+            var resultado = new ProductoLogica().ListarProductosDeSegunda();
+            /*
             var url = "https://localhost:44310/api/MyMusicAppServices/GetProductosSegunda";
 
             var webrequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
@@ -413,7 +420,7 @@ namespace MyMusicApp.Web.Controllers
             }
 
             var resultado = JsonConvert.DeserializeObject<List<ProductoDTO>>(datos);
-
+            */
 
             model.ListadoProductos = new List<ProductoDTO>();
             foreach (var item in resultado)

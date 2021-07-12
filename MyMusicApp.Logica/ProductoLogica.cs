@@ -12,7 +12,7 @@ namespace MyMusicApp.Logica
     public class ProductoLogica
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructores
@@ -155,9 +155,9 @@ namespace MyMusicApp.Logica
                 var respuestaDatos = intermedioProducto.ObtenerProductoPorCodigo(codigo);
                 if (respuestaDatos.CodigoRespuesta == 1)
                 {
-                    var solicitudCompraDTO = ConvertirDatosProductoADTO((Producto)respuestaDatos.ContenidoRespuesta);
+                    var productoDTO = ConvertirDatosProductoADTO((Producto)respuestaDatos.ContenidoRespuesta);
 
-                    return solicitudCompraDTO;
+                    return productoDTO;
                 }
                 else
                 {

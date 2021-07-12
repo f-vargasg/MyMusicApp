@@ -33,5 +33,6 @@ namespace MyMusicApp.DTO
         public DateTime FechaRegistro { get; set; }
 
         public SucursalDTO SucursalAsociada { get; set; }
+
     }
 }

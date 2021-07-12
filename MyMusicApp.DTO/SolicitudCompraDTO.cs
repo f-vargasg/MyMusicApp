@@ -30,5 +30,7 @@ namespace MyMusicApp.DTO
 
         public int EstadoSolicitud { get; set; }
 
+        public decimal MtoPctDescuento { get; set; }
+
     }
 }

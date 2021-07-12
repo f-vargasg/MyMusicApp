@@ -5,16 +5,17 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using MyMusicApp.DTO;
 
+
 namespace MyMusicApp.Datos
 {
     public class ClaseEjemploDatos
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructor
-        public ClaseEjemploDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public ClaseEjemploDatos(MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }

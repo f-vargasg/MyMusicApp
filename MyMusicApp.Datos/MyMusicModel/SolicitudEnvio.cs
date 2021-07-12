@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MyMusicApp.Datos.MyMusicModel
 {
-    public partial class SolicitudEnvioDomic
+    public partial class SolicitudEnvio
     {
         public int PkSolicitudEnvio { get; set; }
         public string DesUbicEnvio { get; set; }
@@ -13,7 +13,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public DateTime FecRecibo { get; set; }
         public int FkOrdenCompra { get; set; }
         public int IndEstado { get; set; }
-        public decimal? MtoPctComision { get; set; }
+        public decimal MtoPctComision { get; set; }
 
         public virtual OrdenCompra FkOrdenCompraNavigation { get; set; }
     }

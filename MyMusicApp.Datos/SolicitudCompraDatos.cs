@@ -11,11 +11,11 @@ namespace MyMusicApp.Datos
     public class SolicitudCompraDatos
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructor
-        public SolicitudCompraDatos(DB_A4C98C_MusicStoreDBContext contextoGlobal)
+        public SolicitudCompraDatos(MusicStoreDBContext contextoGlobal)
         {
             contexto = contextoGlobal;
         }
@@ -384,7 +384,7 @@ namespace MyMusicApp.Datos
         /// <param name="indEstado"></param>
         /// <returns></returns>
         public RespuestaDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente,  decimal mtoTotalOrden, 
-                                                   int indEstado)
+                                                   int indEstado, decimal pctDescuento)
         {
             try
             {
@@ -394,7 +394,9 @@ namespace MyMusicApp.Datos
                     TipEntrega = tipEntrega,
                     FkCliente = idCliente,
                     MntTotalOrden = mtoTotalOrden,
-                    IndEstado =indEstado
+                    IndEstado =indEstado,
+                    MtoPctDescuento = pctDescuento
+                   
                 };
                 contexto.OrdenCompras.Add(ordenCompra);
 
@@ -449,7 +451,7 @@ namespace MyMusicApp.Datos
         /// <param name="indEstado"></param>
         /// <returns></returns>
         public RespuestaDTO AgregarSolicitudCompra(DateTime fecOrden, int tipEntrega, int idCliente, decimal mtoTotalOrden,
-                                                   int idVendedor,   int indEstado)
+                                                   int idVendedor,   int indEstado, decimal pctDescuento)
         {
             try
             {
@@ -460,7 +462,8 @@ namespace MyMusicApp.Datos
                     FkCliente = idCliente,
                     MntTotalOrden = mtoTotalOrden,
                     FkVendedor = idVendedor,
-                    IndEstado = indEstado
+                    IndEstado = indEstado,
+                    MtoPctDescuento = pctDescuento
                 };
                 contexto.OrdenCompras.Add(ordenCompra);
 

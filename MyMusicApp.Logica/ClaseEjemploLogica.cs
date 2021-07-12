@@ -9,7 +9,7 @@ namespace MyMusicApp.Logica
     public class ClaseEjemploLogica
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructor

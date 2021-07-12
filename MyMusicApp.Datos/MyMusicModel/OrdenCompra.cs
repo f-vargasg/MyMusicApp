@@ -10,7 +10,7 @@ namespace MyMusicApp.Datos.MyMusicModel
         public OrdenCompra()
         {
             DetalleCompras = new HashSet<DetalleCompra>();
-            SolicitudEnvioDomics = new HashSet<SolicitudEnvioDomic>();
+            SolicitudEnvios = new HashSet<SolicitudEnvio>();
         }
 
         public int PkOrdenCompra { get; set; }
@@ -25,6 +25,6 @@ namespace MyMusicApp.Datos.MyMusicModel
         public virtual Cliente FkClienteNavigation { get; set; }
         public virtual Vendedor FkVendedorNavigation { get; set; }
         public virtual ICollection<DetalleCompra> DetalleCompras { get; set; }
-        public virtual ICollection<SolicitudEnvioDomic> SolicitudEnvioDomics { get; set; }
+        public virtual ICollection<SolicitudEnvio> SolicitudEnvios { get; set; }
     }
 }

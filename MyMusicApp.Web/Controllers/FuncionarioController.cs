@@ -107,6 +107,120 @@ namespace MyMusicApp.Web.Controllers
             return RedirectToAction("DetailsVendedor", new { id = model.Vendedor.IdEntidad });
         }
 
+        /// <summary>
+        /// Post
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ListarSolicitudesEnvio()
+        {
+            SolicitudEnvioVM model = new SolicitudEnvioVM();
+
+            var resultado = new SolicitudEnvioLogica().ListarSolicitudesEnvio();
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoSolicitudes = new List<SolicitudEnvioDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoSolicitudes.Add((SolicitudEnvioDTO)item);
+                }
+            }
+            return View(model);
+        }
+        /// <summary>
+        /// QUIZ #2 - 3.b.i   Listado de las solicitudes de envío según su estado
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ListarSolicitudesEnvioXEstado(int codEstado)
+        {
+            SolicitudEnvioVM model = new SolicitudEnvioVM();
+
+            var resultado = new SolicitudEnvioLogica().ListarSolicitudesEnvioPorEstado(codEstado);
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoSolicitudes = new List<SolicitudEnvioDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoSolicitudes.Add((SolicitudEnvioDTO)item);
+                }
+            }
+            return View(model);
+        }
+
+
+        public ActionResult ListarSolicitudesCompra()
+        {
+            SolicitudesCompraVM model = new SolicitudesCompraVM();
+
+            var resultado = new SolicitudCompraLogica().ListarTotalSolicitudesCompra();
+
+            if (resultado.ElementAt(0).GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado.ElementAt(0);
+            }
+            else
+            {
+                model.ListadoSolicitudesCompra = new List<SolicitudCompraDTO>();
+                foreach (var item in resultado)
+                {
+                    model.ListadoSolicitudesCompra.Add((SolicitudCompraDTO)item);
+                }
+            }
+            return View(model);
+        }
+
+        /// <summary>
+        /// Post
+        /// </summary>
+        public ActionResult DetailSolicitudCompra (int id)
+        {
+            var resultado = new SolicitudCompraLogica().ObtenerSolicitudCompraPorCodigo(id);
+
+            SolicitudesCompraVM model = new SolicitudesCompraVM();
+
+            if (resultado.GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado;
+            }
+            else
+            {
+                model.SolicitudCompra = (SolicitudCompraDTO)resultado;
+
+                var listDetalleCompra = new DetalleCompraLogica().ListasDetallesOrdenCompra(model.SolicitudCompra.IdEntidad);
+                foreach (var item in listDetalleCompra)
+                {
+                    var producto = new ProductoLogica().ObtenerProductoPorCodigo(((DetalleCompraDTO)item).Producto);
+
+                    if (((ProductoDTO)producto).IndSegunda == 1)
+                    {
+                        model.SolicitudCompra.MtoPctDescuento = Convert.ToDecimal(30.0 / 100.0);
+                    }
+                }
+
+                if (model.SolicitudCompra.MtoPctDescuento > 0)
+                {
+                    decimal res = model.SolicitudCompra.MontoTotal - (model.SolicitudCompra.MontoTotal * model.SolicitudCompra.MtoPctDescuento);
+                    ViewBag.MtoOrdenFinal = String.Format("{0:#,###,###,##0.00}", res);
+                }
+                else
+                {
+                    ViewBag.MtoOrdenFinal = String.Format("{0:#,###,###,##0.00}", model.SolicitudCompra.MontoTotal);
+                }
+            }
+
+            return View(model);
+        }
+
+
         public IActionResult Index()
         {
             return View();

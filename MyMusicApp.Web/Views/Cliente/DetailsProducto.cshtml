@@ -53,6 +53,8 @@
     <a asp-action="ContenidoCarritoCompras">Ver carrito de compras</a>
 </div>
 
+@{await Html.RenderPartialAsync("_DetalleProductoRelacionado");}
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

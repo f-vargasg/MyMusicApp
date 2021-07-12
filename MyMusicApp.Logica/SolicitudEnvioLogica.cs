@@ -12,7 +12,7 @@ namespace MyMusicApp.Logica
     public class SolicitudEnvioLogica
     {
         #region Variables
-        DB_A4C98C_MusicStoreDBContext contexto = new DB_A4C98C_MusicStoreDBContext();
+        MusicStoreDBContext contexto = new MusicStoreDBContext();
         #endregion
 
         #region Constructores
@@ -24,23 +24,23 @@ namespace MyMusicApp.Logica
 
         #region Metodos
         #region Conversiones
-        internal static SolicitudEnvioDTO ConvertirDatosSolicitudEnvioADTO(SolicitudEnvioDomic solicitudEnvio)
+        internal static SolicitudEnvioDTO ConvertirDatosSolicitudEnvioADTO(SolicitudEnvio solicitudEnvio)
         {
             return new SolicitudEnvioDTO
             {
-                OrdenCompraAsociada = (solicitudEnvio.FkOrdenCompraNavigation != null ? SolicitudDeCompraLogica.ConvertirDatosOrdenCompraADTO(solicitudEnvio.FkOrdenCompraNavigation) : null),
+                OrdenCompraAsociada = (solicitudEnvio.FkOrdenCompraNavigation != null ? SolicitudCompraLogica.ConvertirDatosOrdenCompraADTO(solicitudEnvio.FkOrdenCompraNavigation) : null),
                 EstadoSolicEnvio = solicitudEnvio.IndEstado,
                 FecEnvio = solicitudEnvio.FecEnvio,
                 FechaRecibido = solicitudEnvio.FecRecibo,
                 UbicacionEnvio = solicitudEnvio.DesUbicEnvio,
                 IdEntidad = solicitudEnvio.PkSolicitudEnvio,
-                MtoPctComision = solicitudEnvio.MtoPctComision ?? 0 
+                MtoPctComision = solicitudEnvio.MtoPctComision
             };
         }
 
-        internal static SolicitudEnvioDomic ConvertirSolicitudEnvioDTOaDatos(SolicitudEnvioDTO solicitudEnvioDTO)
+        internal static SolicitudEnvio ConvertirSolicitudEnvioDTOaDatos(SolicitudEnvioDTO solicitudEnvioDTO)
         {
-            return new SolicitudEnvioDomic
+            return new SolicitudEnvio
             {
                 DesUbicEnvio = solicitudEnvioDTO.UbicacionEnvio,
                 FecEnvio = solicitudEnvioDTO.FecEnvio,
@@ -57,7 +57,7 @@ namespace MyMusicApp.Logica
         {
             try
             {
-                var solicitudEnvio = new SolicitudEnvioDomic
+                var solicitudEnvio = new SolicitudEnvio
                 {
                     DesUbicEnvio = desUbicacion,
                     FecEnvio = fecEnvio,
@@ -65,7 +65,7 @@ namespace MyMusicApp.Logica
                     FkOrdenCompra = idOrdenCompra,
                     IndEstado = indEstado
                 };
-                contexto.SolicitudEnvioDomics.Add(solicitudEnvio);
+                contexto.SolicitudEnvios.Add(solicitudEnvio);
 
                 var guardado = contexto.SaveChanges();
 
@@ -105,6 +105,8 @@ namespace MyMusicApp.Logica
                 }
             }
         }
+
+        
 
         public BaseDTO ActualizarEstadoSolicitudEnvio(int idSolEnvio, int indEstado)
         {
@@ -182,17 +184,66 @@ namespace MyMusicApp.Logica
             }
         }
 
-        public List<BaseDTO> ListarSolicitudesEnvioPorEstado(int indEstado)
+        public RespuestaDTO ActualizarPctComisionProductosSegunda(int idEnvio, decimal pctComision)
+        {
+            try
+            {
+                var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(S => S.PkSolicitudEnvio == idEnvio);
+
+                if (solicitudEnvio != null)
+                {
+                    solicitudEnvio.MtoPctComision = pctComision;
+
+                    if (contexto.SaveChanges() > 0)
+                    {
+                        return new RespuestaDTO
+                        {
+                            CodigoRespuesta = 1,
+                            ContenidoRespuesta = solicitudEnvio
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception("No se pudo actualizar el porcentaje de comisión de la solicitud de envío");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró la solicitud de envío.");
+                }
+            }
+            catch (Exception error)
+            {
+                if (error.InnerException != null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
+            }
+        }
+
+        public List<BaseDTO> ListarSolicitudesEnvio()
         {
             try
             {
                 SolicitudEnvioDatos intermedioEjemplo = new SolicitudEnvioDatos();
 
-                var respuestaDatos = intermedioEjemplo.ListarSolicitudesEnvioPorEstado(indEstado);
+                var respuestaDatos = intermedioEjemplo.ListarSolicitudesEnvio();
                 if (respuestaDatos.CodigoRespuesta == 1)
                 {
                     List<BaseDTO> respSolicitudEnvio = new List<BaseDTO>();
-                    foreach (var item in (List<SolicitudEnvioDomic>)respuestaDatos.ContenidoRespuesta)
+                    foreach (var item in (List<SolicitudEnvio>)respuestaDatos.ContenidoRespuesta)
                     {
                         respSolicitudEnvio.Add(ConvertirDatosSolicitudEnvioADTO(item));
                     }
@@ -209,6 +260,35 @@ namespace MyMusicApp.Logica
             }
         }
 
+        public List<BaseDTO> ListarSolicitudesEnvioPorEstado(int indEstado)
+        {
+            try
+            {
+                SolicitudEnvioDatos intermedioEjemplo = new SolicitudEnvioDatos();
+
+                var respuestaDatos = intermedioEjemplo.ListarSolicitudesEnvioPorEstado(indEstado);
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    List<BaseDTO> respSolicitudEnvio = new List<BaseDTO>();
+                    foreach (var item in (List<SolicitudEnvio>)respuestaDatos.ContenidoRespuesta)
+                    {
+                        respSolicitudEnvio.Add(ConvertirDatosSolicitudEnvioADTO(item));
+                    }
+                    return respSolicitudEnvio;
+                }
+                else
+                {
+                    throw new Exception(((ErrorDTO)respuestaDatos.ContenidoRespuesta).MensajeError); // opcion 2
+                }
+            }
+            catch (Exception error)
+            {
+                return new List<BaseDTO> { new ErrorDTO { MensajeError = error.Message } };
+            }
+        }
+
+        
+        
         
         #endregion
         #endregion
