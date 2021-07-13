@@ -170,8 +170,6 @@ namespace MyMusicApp.Logica
             }
         }
 
-
-
         public List<BaseDTO> FiltrarProductosPorParametros(string nombreProducto, int tipoProducto,
                                                            int sucursal, List<decimal> rangoPrecios)
         {

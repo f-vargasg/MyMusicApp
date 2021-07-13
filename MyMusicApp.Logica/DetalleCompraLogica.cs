@@ -29,18 +29,20 @@ namespace MyMusicApp.Logica
         {
             return new DetalleCompraDTO
             {
-                Producto = detalleCompra.FkProducto,
+                ProductoAsociado = (detalleCompra.FkProductoNavigation != null ? ProductoLogica.ConvertirDatosProductoADTO(detalleCompra.FkProductoNavigation) : null),
+                SolicitudCompraAsociada = (detalleCompra.FkOrdenCompraNavigation != null ? SolicitudCompraLogica.ConvertirDatosOrdenCompraADTO(detalleCompra.FkOrdenCompraNavigation) : null),
                 CantidadProducto = detalleCompra.CntArticulo,
                 Estado = detalleCompra.IndEstado
 
-                //ClienteAsociado = (ordenCompra.FkClienteNavigation != null ? ClienteLogica.ConvertirDatosClienteADTO(ordenCompra.FkClienteNavigation) : null),
-                //VendedorAsociado = (ordenCompra.FkVendedorNavigation != null ? VendedorLogica.ConvertirDatosVendedorADTO(ordenCompra.FkVendedorNavigation) : null),
-                //FechaOrden = ordenCompra.FecOrden,
-                //IdEntidad = ordenCompra.PkOrdenCompra,
-                //MontoTotal = ordenCompra.MntTotalOrden,
-                //TipoEntrega = ordenCompra.TipEntrega,
-                //EstadoSolicitud = ordenCompra.IndEstado,
-                //MtoPctDescuento = ordenCompra.MtoPctDescuento
+            };
+        }
+
+        internal static DetalleCompra ConvertirDTODetalleCompraADatos(DetalleCompraDTO item)
+        {
+            return new DetalleCompra
+            {
+                CntArticulo = item.CantidadProducto,
+                IndEstado = item.Estado
             };
         }
 
@@ -89,6 +91,45 @@ namespace MyMusicApp.Logica
                 return new List<BaseDTO> { new ErrorDTO { MensajeError = error.Message } };
             }
         }
+
+        public BaseDTO PrimerDetalleConProductoDeSegunda(int id)
+        {
+            try
+            {
+                DetalleCompraDatos intermedioEjemplo = new DetalleCompraDatos();
+                RespuestaDTO prodDeSegunda = null;
+                BaseDTO detalleCompraResp = null;
+                var respuestaDatos = intermedioEjemplo.ListasDetallesOrdenCompra(id);
+                bool found;
+
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    // List<BaseDTO> respDetalleCompra = new List<BaseDTO>();
+                    found = false;
+                    List<DetalleCompra> lst = (List<DetalleCompra>)respuestaDatos.ContenidoRespuesta;
+                    for (int i = 0; i < lst.Count && !found; i++)
+                    {
+                        prodDeSegunda = new ProductoDatos().ObtenerProductoPorCodigo(lst[i].FkProducto);
+                        found = (((Producto)prodDeSegunda.ContenidoRespuesta).IndSegunda == 1);
+                        if (found)
+                        {
+                            detalleCompraResp = ConvertirDatosDetalleCompraADTO( lst[i]);
+                        }
+                    }
+
+                    return detalleCompraResp;
+                }
+                else
+                {
+                    return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
+
         #endregion Funciones
 
         #endregion Metodos

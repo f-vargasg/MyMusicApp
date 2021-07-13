@@ -8,13 +8,14 @@ namespace MyMusicApp.DTO
 {
     public class DetalleCompraDTO : BaseDTO
     {
-        public int Producto { get; set; }
 
         public int CantidadProducto { get; set; }
 
         public int Estado { get; set; }
 
+        public ProductoDTO ProductoAsociado { get; set; }
 
+        public SolicitudCompraDTO SolicitudCompraAsociada { get; set; }
 
     }
 }

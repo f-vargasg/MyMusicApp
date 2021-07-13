@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DetalleCompraLogica1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyMusicApp.Datos\MyMusicApp.Datos.csproj" />
     <ProjectReference Include="..\MyMusicApp.DTO\MyMusicApp.DTO.csproj" />
   </ItemGroup>

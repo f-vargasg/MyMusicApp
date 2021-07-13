@@ -194,16 +194,10 @@ namespace MyMusicApp.Web.Controllers
             else
             {
                 model.SolicitudCompra = (SolicitudCompraDTO)resultado;
-
-                var listDetalleCompra = new DetalleCompraLogica().ListasDetallesOrdenCompra(model.SolicitudCompra.IdEntidad);
-                foreach (var item in listDetalleCompra)
+                var primDetalleProdSegunda = new DetalleCompraLogica().PrimerDetalleConProductoDeSegunda(model.SolicitudCompra.IdEntidad);
+                if (primDetalleProdSegunda !=null)
                 {
-                    var producto = new ProductoLogica().ObtenerProductoPorCodigo(((DetalleCompraDTO)item).Producto);
-
-                    if (((ProductoDTO)producto).IndSegunda == 1)
-                    {
-                        model.SolicitudCompra.MtoPctDescuento = Convert.ToDecimal(30.0 / 100.0);
-                    }
+                    model.SolicitudCompra.MtoPctDescuento = Convert.ToDecimal(30.0 / 100.0);
                 }
 
                 if (model.SolicitudCompra.MtoPctDescuento > 0)
@@ -220,6 +214,55 @@ namespace MyMusicApp.Web.Controllers
             return View(model);
         }
 
+
+        /// <summary>
+        /// QUIZ #2 - 3.b.ii   Búsqueda de la solicitud de envío por Primary Key.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DetailsSolicitudEnvio(int id)
+        {
+            SolicitudEnvioVM model = new SolicitudEnvioVM();
+
+            ViewBag.PuestoVendedor = "Puesto Vendedor: <NO ASIGNADO>";
+            if (HttpContext.Session.GetString("PuestoVendedor") != null)
+            {
+                ViewBag.PuestoVendedor = "Puesto Vendedor: " + HttpContext.Session.GetString("PuestoVendedor");
+            }
+
+            var resultado = new SolicitudEnvioLogica().ObtenerSolicitudEnvioPorCodigo(id);
+
+            if (resultado.GetType() == typeof(ErrorDTO))
+            {
+                model.Error = (ErrorDTO)resultado;
+            }
+            else
+            {
+                model.SolicitudEnvio = (SolicitudEnvioDTO)resultado;
+                var primDetalleProdSegunda = new DetalleCompraLogica().PrimerDetalleConProductoDeSegunda(model.SolicitudEnvio.OrdenCompraAsociada.IdEntidad);
+                if (primDetalleProdSegunda != null)
+                {
+                    model.SolicitudEnvio.MtoPctComision = Convert.ToDecimal(15.0 / 100.0);
+                }
+
+                var ordenCompra = new SolicitudCompraLogica().ObtenerSolicitudCompraPorCodigo(model.SolicitudEnvio.OrdenCompraAsociada.IdEntidad);
+
+                if (model.SolicitudEnvio.MtoPctComision > 0)
+                {
+                    decimal res = (((SolicitudCompraDTO)ordenCompra).MontoTotal * Convert.ToDecimal(model.SolicitudEnvio.MtoPctComision));
+                    ViewBag.MtoColones = String.Format("{0:#,###,###,##0.00}", res);
+
+                    var actualiza = new SolicitudEnvioLogica().ActualizarPctComisionProductosSegunda(id, Convert.ToDecimal(model.SolicitudEnvio.MtoPctComision));
+
+                }
+                else
+                {
+                    ViewBag.MtoColones = String.Format("{0:#,###,###,##0.00}", ((SolicitudCompraDTO)ordenCompra).MontoTotal);
+                }
+            }
+
+            return View(model);
+
+        }
 
         public IActionResult Index()
         {

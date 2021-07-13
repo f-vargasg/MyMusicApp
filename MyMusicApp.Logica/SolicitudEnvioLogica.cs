@@ -28,7 +28,8 @@ namespace MyMusicApp.Logica
         {
             return new SolicitudEnvioDTO
             {
-                OrdenCompraAsociada = (solicitudEnvio.FkOrdenCompraNavigation != null ? SolicitudCompraLogica.ConvertirDatosOrdenCompraADTO(solicitudEnvio.FkOrdenCompraNavigation) : null),
+                // OrdenCompraAsociada = (solicitudEnvio.FkOrdenCompraNavigation != null ? SolicitudCompraLogica.ConvertirDatosOrdenCompraADTO(solicitudEnvio.FkOrdenCompraNavigation) : null),
+                OrdenCompraAsociada = new SolicitudCompraDTO { IdEntidad = solicitudEnvio.FkOrdenCompra },
                 EstadoSolicEnvio = solicitudEnvio.IndEstado,
                 FecEnvio = solicitudEnvio.FecEnvio,
                 FechaRecibido = solicitudEnvio.FecRecibo,
@@ -52,8 +53,32 @@ namespace MyMusicApp.Logica
         #endregion
 
         #region Funcion
+
+        public BaseDTO ObtenerSolicitudEnvioPorCodigo(int codigo)
+        {
+            try
+            {
+                SolicitudEnvioDatos intermedioEjemplo = new SolicitudEnvioDatos();
+
+                var respuestaDatos = intermedioEjemplo.ObtenerSolicitudEnvioPorCodigo(codigo);
+                if (respuestaDatos.CodigoRespuesta == 1)
+                {
+                    var solicitudEnvioDTO = ConvertirDatosSolicitudEnvioADTO((SolicitudEnvio)respuestaDatos.ContenidoRespuesta);
+
+                    return solicitudEnvioDTO;
+                }
+                else
+                {
+                    return (ErrorDTO)respuestaDatos.ContenidoRespuesta;
+                }
+            }
+            catch (Exception error)
+            {
+                return new ErrorDTO { MensajeError = error.Message };
+            }
+        }
         public BaseDTO AgregarSolicitudEnvio(string desUbicacion, DateTime fecEnvio, DateTime fecRecibo,
-                                                  int idOrdenCompra, int indEstado)
+                                                  int idOrdenCompra, int indEstado, decimal mtoPctComision)
         {
             try
             {
@@ -63,7 +88,8 @@ namespace MyMusicApp.Logica
                     FecEnvio = fecEnvio,
                     FecRecibo = fecRecibo,
                     FkOrdenCompra = idOrdenCompra,
-                    IndEstado = indEstado
+                    IndEstado = indEstado,
+                    MtoPctComision = mtoPctComision
                 };
                 contexto.SolicitudEnvios.Add(solicitudEnvio);
 
@@ -105,8 +131,6 @@ namespace MyMusicApp.Logica
                 }
             }
         }
-
-        
 
         public BaseDTO ActualizarEstadoSolicitudEnvio(int idSolEnvio, int indEstado)
         {
@@ -286,9 +310,6 @@ namespace MyMusicApp.Logica
                 return new List<BaseDTO> { new ErrorDTO { MensajeError = error.Message } };
             }
         }
-
-        
-        
         
         #endregion
         #endregion

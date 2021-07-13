@@ -107,10 +107,10 @@ namespace MyMusicApp.Servicios.Controllers
         /// <returns></returns>
         [HttpPost("PostAgregarSolEnvPrimVez")]
         public BaseDTO PostAgregarSolEnvPrimVez(string desUbicacion, DateTime fecEnvio, DateTime fecRecibo,
-                                                  int idOrdenCompra, int indEstado)
+                                                  int idOrdenCompra, int indEstado, decimal mtoPctComision)
         {
             return new SolicitudEnvioLogica().AgregarSolicitudEnvio(desUbicacion, fecEnvio, fecRecibo, idOrdenCompra,
-                                                                     indEstado);
+                                                                     indEstado, mtoPctComision);
         }
 
         

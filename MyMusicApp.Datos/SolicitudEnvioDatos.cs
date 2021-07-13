@@ -26,20 +26,23 @@ namespace MyMusicApp.Datos
         #endregion
 
         #region Metodos
-
         /// <summary>
         /// 5.a. Búsqueda de la solicitud de envío por Primary Key
         /// </summary>
         /// <param name="codigo"></param>
         /// <returns></returns>
-        public object ObtenerSolicitudEnvioPorCodigo(int codigo)
+        public RespuestaDTO ObtenerSolicitudEnvioPorCodigo(int codigo)
         {
             try
             {
                 var solicitudEnvio = contexto.SolicitudEnvios.FirstOrDefault(P => P.PkSolicitudEnvio == codigo);
                 if (solicitudEnvio != null)
                 {
-                    return solicitudEnvio;
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = 1,
+                        ContenidoRespuesta = solicitudEnvio
+                    };
                 }
                 else
                 {
@@ -48,9 +51,25 @@ namespace MyMusicApp.Datos
             }
             catch (Exception error)
             {
-                return error.Message;
+                if (error.InnerException == null)
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.Message }
+                    };
+                }
+                else
+                {
+                    return new RespuestaDTO
+                    {
+                        CodigoRespuesta = -1,
+                        ContenidoRespuesta = new ErrorDTO { MensajeError = error.InnerException.Message }
+                    };
+                }
             }
         }
+        
 
         /// <summary>
         /// 5.c. Listado total de solicitudes de envío.
