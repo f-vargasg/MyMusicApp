@@ -403,8 +403,8 @@ namespace MyMusicApp.Web.Controllers
         public ActionResult ListarProductosSegunda()
         {
             SucursalProductoVM model = new SucursalProductoVM();
-            var resultado = new ProductoLogica().ListarProductosDeSegunda();
-            /*
+            // var resultado = new ProductoLogica().ListarProductosDeSegunda();
+
             var url = "https://localhost:44310/api/MyMusicAppServices/GetProductosSegunda";
 
             var webrequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
@@ -420,7 +420,6 @@ namespace MyMusicApp.Web.Controllers
             }
 
             var resultado = JsonConvert.DeserializeObject<List<ProductoDTO>>(datos);
-            */
 
             model.ListadoProductos = new List<ProductoDTO>();
             foreach (var item in resultado)
